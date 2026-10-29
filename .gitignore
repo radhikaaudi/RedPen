@@ -1,0 +1,14 @@
+# Secrets — never commit
+.env
+
+# Python
+.venv/
+__pycache__/
+*.pyc
+
+# Local uploads / outputs
+uploads/
+outputs/
+
+# OS
+.DS_Store

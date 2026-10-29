@@ -1,0 +1,1277 @@
+{
+  "summary": {
+    "sheets": 24,
+    "answers": 96,
+    "reading_word_accuracy": 0.9924,
+    "exact_agreement": 0.8333,
+    "within_half_mark": 1.0,
+    "within_one_mark": 1.0,
+    "mean_abs_error_per_question": 0.083,
+    "mean_abs_error_per_student_total": 0.208,
+    "answers_off_by_more_than_half": 0,
+    "of_which_flagged_for_review": 0,
+    "cost_usd_total": 0.2416,
+    "cost_usd_per_sheet": 0.0101,
+    "seconds_per_sheet_median": 10.6
+  },
+  "rows": [
+    {
+      "run": 1,
+      "student": "Aarav Sharma",
+      "question_id": "Q1",
+      "teacher": 3,
+      "redpen": 3.0,
+      "diff": 0.0,
+      "flagged": false
+    },
+    {
+      "run": 1,
+      "student": "Aarav Sharma",
+      "question_id": "Q2",
+      "teacher": 3,
+      "redpen": 3.0,
+      "diff": 0.0,
+      "flagged": false
+    },
+    {
+      "run": 1,
+      "student": "Aarav Sharma",
+      "question_id": "Q3",
+      "teacher": 2,
+      "redpen": 2.0,
+      "diff": 0.0,
+      "flagged": false
+    },
+    {
+      "run": 1,
+      "student": "Aarav Sharma",
+      "question_id": "Q4",
+      "teacher": 2,
+      "redpen": 2.0,
+      "diff": 0.0,
+      "flagged": false
+    },
+    {
+      "run": 1,
+      "student": "Meera Iyer",
+      "question_id": "Q1",
+      "teacher": 1,
+      "redpen": 1.0,
+      "diff": 0.0,
+      "flagged": false
+    },
+    {
+      "run": 1,
+      "student": "Meera Iyer",
+      "question_id": "Q2",
+      "teacher": 1.5,
+      "redpen": 1.0,
+      "diff": -0.5,
+      "flagged": false
+    },
+    {
+      "run": 1,
+      "student": "Meera Iyer",
+      "question_id": "Q3",
+      "teacher": 0,
+      "redpen": 0.0,
+      "diff": 0.0,
+      "flagged": false
+    },
+    {
+      "run": 1,
+      "student": "Meera Iyer",
+      "question_id": "Q4",
+      "teacher": 1,
+      "redpen": 1.0,
+      "diff": 0.0,
+      "flagged": true
+    },
+    {
+      "run": 1,
+      "student": "Kabir Khan",
+      "question_id": "Q1",
+      "teacher": 3,
+      "redpen": 3.0,
+      "diff": 0.0,
+      "flagged": false
+    },
+    {
+      "run": 1,
+      "student": "Kabir Khan",
+      "question_id": "Q2",
+      "teacher": 3,
+      "redpen": 3.0,
+      "diff": 0.0,
+      "flagged": false
+    },
+    {
+      "run": 1,
+      "student": "Kabir Khan",
+      "question_id": "Q3",
+      "teacher": 1.5,
+      "redpen": 1.0,
+      "diff": -0.5,
+      "flagged": false
+    },
+    {
+      "run": 1,
+      "student": "Kabir Khan",
+      "question_id": "Q4",
+      "teacher": 0,
+      "redpen": 0.0,
+      "diff": 0.0,
+      "flagged": false
+    },
+    {
+      "run": 1,
+      "student": "Zoya Ahmed",
+      "question_id": "Q1",
+      "teacher": 0,
+      "redpen": 0.0,
+      "diff": 0.0,
+      "flagged": false
+    },
+    {
+      "run": 1,
+      "student": "Zoya Ahmed",
+      "question_id": "Q2",
+      "teacher": 3,
+      "redpen": 3.0,
+      "diff": 0.0,
+      "flagged": false
+    },
+    {
+      "run": 1,
+      "student": "Zoya Ahmed",
+      "question_id": "Q3",
+      "teacher": 2,
+      "redpen": 2.0,
+      "diff": 0.0,
+      "flagged": false
+    },
+    {
+      "run": 1,
+      "student": "Zoya Ahmed",
+      "question_id": "Q4",
+      "teacher": 2,
+      "redpen": 2.0,
+      "diff": 0.0,
+      "flagged": false
+    },
+    {
+      "run": 1,
+      "student": "Rohan Verma",
+      "question_id": "Q1",
+      "teacher": 3,
+      "redpen": 3.0,
+      "diff": 0.0,
+      "flagged": false
+    },
+    {
+      "run": 1,
+      "student": "Rohan Verma",
+      "question_id": "Q2",
+      "teacher": 0.5,
+      "redpen": 0.5,
+      "diff": 0.0,
+      "flagged": false
+    },
+    {
+      "run": 1,
+      "student": "Rohan Verma",
+      "question_id": "Q3",
+      "teacher": 0,
+      "redpen": 0.0,
+      "diff": 0.0,
+      "flagged": false
+    },
+    {
+      "run": 1,
+      "student": "Rohan Verma",
+      "question_id": "Q4",
+      "teacher": 0,
+      "redpen": 0.0,
+      "diff": 0.0,
+      "flagged": false
+    },
+    {
+      "run": 1,
+      "student": "Ishita Rao",
+      "question_id": "Q1",
+      "teacher": 3,
+      "redpen": 3.0,
+      "diff": 0.0,
+      "flagged": false
+    },
+    {
+      "run": 1,
+      "student": "Ishita Rao",
+      "question_id": "Q2",
+      "teacher": 3,
+      "redpen": 3.0,
+      "diff": 0.0,
+      "flagged": false
+    },
+    {
+      "run": 1,
+      "student": "Ishita Rao",
+      "question_id": "Q3",
+      "teacher": 2,
+      "redpen": 2.0,
+      "diff": 0.0,
+      "flagged": false
+    },
+    {
+      "run": 1,
+      "student": "Ishita Rao",
+      "question_id": "Q4",
+      "teacher": 2,
+      "redpen": 2.0,
+      "diff": 0.0,
+      "flagged": false
+    },
+    {
+      "run": 1,
+      "student": "Dev Malhotra",
+      "question_id": "Q1",
+      "teacher": 2.5,
+      "redpen": 2.0,
+      "diff": -0.5,
+      "flagged": false
+    },
+    {
+      "run": 1,
+      "student": "Dev Malhotra",
+      "question_id": "Q2",
+      "teacher": 1.5,
+      "redpen": 1.5,
+      "diff": 0.0,
+      "flagged": false
+    },
+    {
+      "run": 1,
+      "student": "Dev Malhotra",
+      "question_id": "Q3",
+      "teacher": 1.5,
+      "redpen": 2.0,
+      "diff": 0.5,
+      "flagged": false
+    },
+    {
+      "run": 1,
+      "student": "Dev Malhotra",
+      "question_id": "Q4",
+      "teacher": 0,
+      "redpen": 0.0,
+      "diff": 0.0,
+      "flagged": false
+    },
+    {
+      "run": 1,
+      "student": "Ananya Das",
+      "question_id": "Q1",
+      "teacher": 1,
+      "redpen": 1.0,
+      "diff": 0.0,
+      "flagged": false
+    },
+    {
+      "run": 1,
+      "student": "Ananya Das",
+      "question_id": "Q2",
+      "teacher": 3,
+      "redpen": 3.0,
+      "diff": 0.0,
+      "flagged": false
+    },
+    {
+      "run": 1,
+      "student": "Ananya Das",
+      "question_id": "Q3",
+      "teacher": 2,
+      "redpen": 2.0,
+      "diff": 0.0,
+      "flagged": false
+    },
+    {
+      "run": 1,
+      "student": "Ananya Das",
+      "question_id": "Q4",
+      "teacher": 1.5,
+      "redpen": 1.0,
+      "diff": -0.5,
+      "flagged": true
+    },
+    {
+      "run": 2,
+      "student": "Aarav Sharma",
+      "question_id": "Q1",
+      "teacher": 3,
+      "redpen": 3.0,
+      "diff": 0.0,
+      "flagged": false
+    },
+    {
+      "run": 2,
+      "student": "Aarav Sharma",
+      "question_id": "Q2",
+      "teacher": 3,
+      "redpen": 3.0,
+      "diff": 0.0,
+      "flagged": false
+    },
+    {
+      "run": 2,
+      "student": "Aarav Sharma",
+      "question_id": "Q3",
+      "teacher": 2,
+      "redpen": 2.0,
+      "diff": 0.0,
+      "flagged": false
+    },
+    {
+      "run": 2,
+      "student": "Aarav Sharma",
+      "question_id": "Q4",
+      "teacher": 2,
+      "redpen": 2.0,
+      "diff": 0.0,
+      "flagged": false
+    },
+    {
+      "run": 2,
+      "student": "Meera Iyer",
+      "question_id": "Q1",
+      "teacher": 1,
+      "redpen": 1.0,
+      "diff": 0.0,
+      "flagged": false
+    },
+    {
+      "run": 2,
+      "student": "Meera Iyer",
+      "question_id": "Q2",
+      "teacher": 1.5,
+      "redpen": 1.0,
+      "diff": -0.5,
+      "flagged": false
+    },
+    {
+      "run": 2,
+      "student": "Meera Iyer",
+      "question_id": "Q3",
+      "teacher": 0,
+      "redpen": 0.0,
+      "diff": 0.0,
+      "flagged": false
+    },
+    {
+      "run": 2,
+      "student": "Meera Iyer",
+      "question_id": "Q4",
+      "teacher": 1,
+      "redpen": 1.0,
+      "diff": 0.0,
+      "flagged": true
+    },
+    {
+      "run": 2,
+      "student": "Kabir Khan",
+      "question_id": "Q1",
+      "teacher": 3,
+      "redpen": 2.5,
+      "diff": -0.5,
+      "flagged": false
+    },
+    {
+      "run": 2,
+      "student": "Kabir Khan",
+      "question_id": "Q2",
+      "teacher": 3,
+      "redpen": 3.0,
+      "diff": 0.0,
+      "flagged": false
+    },
+    {
+      "run": 2,
+      "student": "Kabir Khan",
+      "question_id": "Q3",
+      "teacher": 1.5,
+      "redpen": 1.5,
+      "diff": 0.0,
+      "flagged": false
+    },
+    {
+      "run": 2,
+      "student": "Kabir Khan",
+      "question_id": "Q4",
+      "teacher": 0,
+      "redpen": 0.0,
+      "diff": 0.0,
+      "flagged": false
+    },
+    {
+      "run": 2,
+      "student": "Zoya Ahmed",
+      "question_id": "Q1",
+      "teacher": 0,
+      "redpen": 0.0,
+      "diff": 0.0,
+      "flagged": false
+    },
+    {
+      "run": 2,
+      "student": "Zoya Ahmed",
+      "question_id": "Q2",
+      "teacher": 3,
+      "redpen": 3.0,
+      "diff": 0.0,
+      "flagged": false
+    },
+    {
+      "run": 2,
+      "student": "Zoya Ahmed",
+      "question_id": "Q3",
+      "teacher": 2,
+      "redpen": 2.0,
+      "diff": 0.0,
+      "flagged": false
+    },
+    {
+      "run": 2,
+      "student": "Zoya Ahmed",
+      "question_id": "Q4",
+      "teacher": 2,
+      "redpen": 2.0,
+      "diff": 0.0,
+      "flagged": false
+    },
+    {
+      "run": 2,
+      "student": "Rohan Verma",
+      "question_id": "Q1",
+      "teacher": 3,
+      "redpen": 3.0,
+      "diff": 0.0,
+      "flagged": false
+    },
+    {
+      "run": 2,
+      "student": "Rohan Verma",
+      "question_id": "Q2",
+      "teacher": 0.5,
+      "redpen": 0.0,
+      "diff": -0.5,
+      "flagged": false
+    },
+    {
+      "run": 2,
+      "student": "Rohan Verma",
+      "question_id": "Q3",
+      "teacher": 0,
+      "redpen": 0.0,
+      "diff": 0.0,
+      "flagged": false
+    },
+    {
+      "run": 2,
+      "student": "Rohan Verma",
+      "question_id": "Q4",
+      "teacher": 0,
+      "redpen": 0.0,
+      "diff": 0.0,
+      "flagged": false
+    },
+    {
+      "run": 2,
+      "student": "Ishita Rao",
+      "question_id": "Q1",
+      "teacher": 3,
+      "redpen": 3.0,
+      "diff": 0.0,
+      "flagged": false
+    },
+    {
+      "run": 2,
+      "student": "Ishita Rao",
+      "question_id": "Q2",
+      "teacher": 3,
+      "redpen": 3.0,
+      "diff": 0.0,
+      "flagged": false
+    },
+    {
+      "run": 2,
+      "student": "Ishita Rao",
+      "question_id": "Q3",
+      "teacher": 2,
+      "redpen": 2.0,
+      "diff": 0.0,
+      "flagged": false
+    },
+    {
+      "run": 2,
+      "student": "Ishita Rao",
+      "question_id": "Q4",
+      "teacher": 2,
+      "redpen": 2.0,
+      "diff": 0.0,
+      "flagged": false
+    },
+    {
+      "run": 2,
+      "student": "Dev Malhotra",
+      "question_id": "Q1",
+      "teacher": 2.5,
+      "redpen": 2.0,
+      "diff": -0.5,
+      "flagged": false
+    },
+    {
+      "run": 2,
+      "student": "Dev Malhotra",
+      "question_id": "Q2",
+      "teacher": 1.5,
+      "redpen": 1.5,
+      "diff": 0.0,
+      "flagged": false
+    },
+    {
+      "run": 2,
+      "student": "Dev Malhotra",
+      "question_id": "Q3",
+      "teacher": 1.5,
+      "redpen": 2.0,
+      "diff": 0.5,
+      "flagged": false
+    },
+    {
+      "run": 2,
+      "student": "Dev Malhotra",
+      "question_id": "Q4",
+      "teacher": 0,
+      "redpen": 0.0,
+      "diff": 0.0,
+      "flagged": false
+    },
+    {
+      "run": 2,
+      "student": "Ananya Das",
+      "question_id": "Q1",
+      "teacher": 1,
+      "redpen": 1.0,
+      "diff": 0.0,
+      "flagged": false
+    },
+    {
+      "run": 2,
+      "student": "Ananya Das",
+      "question_id": "Q2",
+      "teacher": 3,
+      "redpen": 3.0,
+      "diff": 0.0,
+      "flagged": false
+    },
+    {
+      "run": 2,
+      "student": "Ananya Das",
+      "question_id": "Q3",
+      "teacher": 2,
+      "redpen": 2.0,
+      "diff": 0.0,
+      "flagged": false
+    },
+    {
+      "run": 2,
+      "student": "Ananya Das",
+      "question_id": "Q4",
+      "teacher": 1.5,
+      "redpen": 1.0,
+      "diff": -0.5,
+      "flagged": false
+    },
+    {
+      "run": 3,
+      "student": "Aarav Sharma",
+      "question_id": "Q1",
+      "teacher": 3,
+      "redpen": 3.0,
+      "diff": 0.0,
+      "flagged": false
+    },
+    {
+      "run": 3,
+      "student": "Aarav Sharma",
+      "question_id": "Q2",
+      "teacher": 3,
+      "redpen": 3.0,
+      "diff": 0.0,
+      "flagged": false
+    },
+    {
+      "run": 3,
+      "student": "Aarav Sharma",
+      "question_id": "Q3",
+      "teacher": 2,
+      "redpen": 2.0,
+      "diff": 0.0,
+      "flagged": false
+    },
+    {
+      "run": 3,
+      "student": "Aarav Sharma",
+      "question_id": "Q4",
+      "teacher": 2,
+      "redpen": 2.0,
+      "diff": 0.0,
+      "flagged": false
+    },
+    {
+      "run": 3,
+      "student": "Meera Iyer",
+      "question_id": "Q1",
+      "teacher": 1,
+      "redpen": 1.0,
+      "diff": 0.0,
+      "flagged": false
+    },
+    {
+      "run": 3,
+      "student": "Meera Iyer",
+      "question_id": "Q2",
+      "teacher": 1.5,
+      "redpen": 1.0,
+      "diff": -0.5,
+      "flagged": false
+    },
+    {
+      "run": 3,
+      "student": "Meera Iyer",
+      "question_id": "Q3",
+      "teacher": 0,
+      "redpen": 0.0,
+      "diff": 0.0,
+      "flagged": false
+    },
+    {
+      "run": 3,
+      "student": "Meera Iyer",
+      "question_id": "Q4",
+      "teacher": 1,
+      "redpen": 1.0,
+      "diff": 0.0,
+      "flagged": true
+    },
+    {
+      "run": 3,
+      "student": "Kabir Khan",
+      "question_id": "Q1",
+      "teacher": 3,
+      "redpen": 3.0,
+      "diff": 0.0,
+      "flagged": false
+    },
+    {
+      "run": 3,
+      "student": "Kabir Khan",
+      "question_id": "Q2",
+      "teacher": 3,
+      "redpen": 3.0,
+      "diff": 0.0,
+      "flagged": false
+    },
+    {
+      "run": 3,
+      "student": "Kabir Khan",
+      "question_id": "Q3",
+      "teacher": 1.5,
+      "redpen": 1.5,
+      "diff": 0.0,
+      "flagged": false
+    },
+    {
+      "run": 3,
+      "student": "Kabir Khan",
+      "question_id": "Q4",
+      "teacher": 0,
+      "redpen": 0.0,
+      "diff": 0.0,
+      "flagged": false
+    },
+    {
+      "run": 3,
+      "student": "Zoya Ahmed",
+      "question_id": "Q1",
+      "teacher": 0,
+      "redpen": 0.0,
+      "diff": 0.0,
+      "flagged": false
+    },
+    {
+      "run": 3,
+      "student": "Zoya Ahmed",
+      "question_id": "Q2",
+      "teacher": 3,
+      "redpen": 3.0,
+      "diff": 0.0,
+      "flagged": false
+    },
+    {
+      "run": 3,
+      "student": "Zoya Ahmed",
+      "question_id": "Q3",
+      "teacher": 2,
+      "redpen": 2.0,
+      "diff": 0.0,
+      "flagged": false
+    },
+    {
+      "run": 3,
+      "student": "Zoya Ahmed",
+      "question_id": "Q4",
+      "teacher": 2,
+      "redpen": 2.0,
+      "diff": 0.0,
+      "flagged": false
+    },
+    {
+      "run": 3,
+      "student": "Rohan Verma",
+      "question_id": "Q1",
+      "teacher": 3,
+      "redpen": 3.0,
+      "diff": 0.0,
+      "flagged": false
+    },
+    {
+      "run": 3,
+      "student": "Rohan Verma",
+      "question_id": "Q2",
+      "teacher": 0.5,
+      "redpen": 0.0,
+      "diff": -0.5,
+      "flagged": false
+    },
+    {
+      "run": 3,
+      "student": "Rohan Verma",
+      "question_id": "Q3",
+      "teacher": 0,
+      "redpen": 0.0,
+      "diff": 0.0,
+      "flagged": false
+    },
+    {
+      "run": 3,
+      "student": "Rohan Verma",
+      "question_id": "Q4",
+      "teacher": 0,
+      "redpen": 0.0,
+      "diff": 0.0,
+      "flagged": false
+    },
+    {
+      "run": 3,
+      "student": "Ishita Rao",
+      "question_id": "Q1",
+      "teacher": 3,
+      "redpen": 3.0,
+      "diff": 0.0,
+      "flagged": false
+    },
+    {
+      "run": 3,
+      "student": "Ishita Rao",
+      "question_id": "Q2",
+      "teacher": 3,
+      "redpen": 3.0,
+      "diff": 0.0,
+      "flagged": false
+    },
+    {
+      "run": 3,
+      "student": "Ishita Rao",
+      "question_id": "Q3",
+      "teacher": 2,
+      "redpen": 2.0,
+      "diff": 0.0,
+      "flagged": false
+    },
+    {
+      "run": 3,
+      "student": "Ishita Rao",
+      "question_id": "Q4",
+      "teacher": 2,
+      "redpen": 2.0,
+      "diff": 0.0,
+      "flagged": false
+    },
+    {
+      "run": 3,
+      "student": "Dev Malhotra",
+      "question_id": "Q1",
+      "teacher": 2.5,
+      "redpen": 2.0,
+      "diff": -0.5,
+      "flagged": false
+    },
+    {
+      "run": 3,
+      "student": "Dev Malhotra",
+      "question_id": "Q2",
+      "teacher": 1.5,
+      "redpen": 1.5,
+      "diff": 0.0,
+      "flagged": false
+    },
+    {
+      "run": 3,
+      "student": "Dev Malhotra",
+      "question_id": "Q3",
+      "teacher": 1.5,
+      "redpen": 2.0,
+      "diff": 0.5,
+      "flagged": false
+    },
+    {
+      "run": 3,
+      "student": "Dev Malhotra",
+      "question_id": "Q4",
+      "teacher": 0,
+      "redpen": 0.0,
+      "diff": 0.0,
+      "flagged": false
+    },
+    {
+      "run": 3,
+      "student": "Ananya Das",
+      "question_id": "Q1",
+      "teacher": 1,
+      "redpen": 1.0,
+      "diff": 0.0,
+      "flagged": false
+    },
+    {
+      "run": 3,
+      "student": "Ananya Das",
+      "question_id": "Q2",
+      "teacher": 3,
+      "redpen": 3.0,
+      "diff": 0.0,
+      "flagged": false
+    },
+    {
+      "run": 3,
+      "student": "Ananya Das",
+      "question_id": "Q3",
+      "teacher": 2,
+      "redpen": 2.0,
+      "diff": 0.0,
+      "flagged": false
+    },
+    {
+      "run": 3,
+      "student": "Ananya Das",
+      "question_id": "Q4",
+      "teacher": 1.5,
+      "redpen": 1.0,
+      "diff": -0.5,
+      "flagged": false
+    }
+  ],
+  "calls": [
+    {
+      "step": "Structure answer key",
+      "model": "nvidia/Nemotron-3_5-Lightning",
+      "seconds": 3.45,
+      "prompt_tokens": 522,
+      "completion_tokens": 570,
+      "cost_usd": 0.000168
+    },
+    {
+      "step": "Read handwriting",
+      "model": "nvidia/Nemotron-3.5-Super-VL",
+      "seconds": 2.04,
+      "prompt_tokens": 2514,
+      "completion_tokens": 283,
+      "cost_usd": 0.001009
+    },
+    {
+      "step": "Read handwriting",
+      "model": "nvidia/Nemotron-3.5-Super-VL",
+      "seconds": 3.24,
+      "prompt_tokens": 2514,
+      "completion_tokens": 351,
+      "cost_usd": 0.00107
+    },
+    {
+      "step": "Read handwriting",
+      "model": "nvidia/Nemotron-3.5-Super-VL",
+      "seconds": 3.26,
+      "prompt_tokens": 2514,
+      "completion_tokens": 299,
+      "cost_usd": 0.001023
+    },
+    {
+      "step": "Read handwriting",
+      "model": "nvidia/Nemotron-3.5-Super-VL",
+      "seconds": 3.32,
+      "prompt_tokens": 2514,
+      "completion_tokens": 300,
+      "cost_usd": 0.001024
+    },
+    {
+      "step": "Grade answers",
+      "model": "nvidia/Nemotron-3-Ultra-550b-a55b",
+      "seconds": 6.22,
+      "prompt_tokens": 1287,
+      "completion_tokens": 2183,
+      "cost_usd": 0.007836
+    },
+    {
+      "step": "Grade answers",
+      "model": "nvidia/Nemotron-3-Ultra-550b-a55b",
+      "seconds": 7.45,
+      "prompt_tokens": 1236,
+      "completion_tokens": 2361,
+      "cost_usd": 0.008319
+    },
+    {
+      "step": "Read handwriting",
+      "model": "nvidia/Nemotron-3.5-Super-VL",
+      "seconds": 2.03,
+      "prompt_tokens": 2514,
+      "completion_tokens": 265,
+      "cost_usd": 0.000993
+    },
+    {
+      "step": "Read handwriting",
+      "model": "nvidia/Nemotron-3.5-Super-VL",
+      "seconds": 1.96,
+      "prompt_tokens": 2514,
+      "completion_tokens": 310,
+      "cost_usd": 0.001033
+    },
+    {
+      "step": "Grade answers",
+      "model": "nvidia/Nemotron-3-Ultra-550b-a55b",
+      "seconds": 9.75,
+      "prompt_tokens": 1236,
+      "completion_tokens": 2748,
+      "cost_usd": 0.00948
+    },
+    {
+      "step": "Read handwriting",
+      "model": "nvidia/Nemotron-3.5-Super-VL",
+      "seconds": 1.71,
+      "prompt_tokens": 2514,
+      "completion_tokens": 280,
+      "cost_usd": 0.001006
+    },
+    {
+      "step": "Grade answers",
+      "model": "nvidia/Nemotron-3-Ultra-550b-a55b",
+      "seconds": 13.02,
+      "prompt_tokens": 1219,
+      "completion_tokens": 3363,
+      "cost_usd": 0.011308
+    },
+    {
+      "step": "Read handwriting",
+      "model": "nvidia/Nemotron-3.5-Super-VL",
+      "seconds": 1.91,
+      "prompt_tokens": 2514,
+      "completion_tokens": 297,
+      "cost_usd": 0.001022
+    },
+    {
+      "step": "Grade answers",
+      "model": "nvidia/Nemotron-3-Ultra-550b-a55b",
+      "seconds": 7.19,
+      "prompt_tokens": 1246,
+      "completion_tokens": 2278,
+      "cost_usd": 0.00808
+    },
+    {
+      "step": "Grade answers",
+      "model": "nvidia/Nemotron-3-Ultra-550b-a55b",
+      "seconds": 9.21,
+      "prompt_tokens": 1201,
+      "completion_tokens": 2788,
+      "cost_usd": 0.009565
+    },
+    {
+      "step": "Grade answers",
+      "model": "nvidia/Nemotron-3-Ultra-550b-a55b",
+      "seconds": 6.53,
+      "prompt_tokens": 1234,
+      "completion_tokens": 2140,
+      "cost_usd": 0.007654
+    },
+    {
+      "step": "Grade answers",
+      "model": "nvidia/Nemotron-3-Ultra-550b-a55b",
+      "seconds": 10.56,
+      "prompt_tokens": 1216,
+      "completion_tokens": 3550,
+      "cost_usd": 0.011866
+    },
+    {
+      "step": "Read handwriting",
+      "model": "nvidia/Nemotron-3.5-Super-VL",
+      "seconds": 2.36,
+      "prompt_tokens": 2514,
+      "completion_tokens": 283,
+      "cost_usd": 0.001009
+    },
+    {
+      "step": "Read handwriting",
+      "model": "nvidia/Nemotron-3.5-Super-VL",
+      "seconds": 2.8,
+      "prompt_tokens": 2514,
+      "completion_tokens": 351,
+      "cost_usd": 0.00107
+    },
+    {
+      "step": "Read handwriting",
+      "model": "nvidia/Nemotron-3.5-Super-VL",
+      "seconds": 3.08,
+      "prompt_tokens": 2514,
+      "completion_tokens": 299,
+      "cost_usd": 0.001023
+    },
+    {
+      "step": "Read handwriting",
+      "model": "nvidia/Nemotron-3.5-Super-VL",
+      "seconds": 3.37,
+      "prompt_tokens": 2514,
+      "completion_tokens": 300,
+      "cost_usd": 0.001024
+    },
+    {
+      "step": "Grade answers",
+      "model": "nvidia/Nemotron-3-Ultra-550b-a55b",
+      "seconds": 6.47,
+      "prompt_tokens": 1287,
+      "completion_tokens": 1711,
+      "cost_usd": 0.00642
+    },
+    {
+      "step": "Grade answers",
+      "model": "nvidia/Nemotron-3-Ultra-550b-a55b",
+      "seconds": 7.01,
+      "prompt_tokens": 1219,
+      "completion_tokens": 2524,
+      "cost_usd": 0.008791
+    },
+    {
+      "step": "Grade answers",
+      "model": "nvidia/Nemotron-3-Ultra-550b-a55b",
+      "seconds": 6.66,
+      "prompt_tokens": 1236,
+      "completion_tokens": 2642,
+      "cost_usd": 0.009162
+    },
+    {
+      "step": "Grade answers",
+      "model": "nvidia/Nemotron-3-Ultra-550b-a55b",
+      "seconds": 7.74,
+      "prompt_tokens": 1236,
+      "completion_tokens": 2340,
+      "cost_usd": 0.008256
+    },
+    {
+      "step": "Read handwriting",
+      "model": "nvidia/Nemotron-3.5-Super-VL",
+      "seconds": 2.63,
+      "prompt_tokens": 2514,
+      "completion_tokens": 265,
+      "cost_usd": 0.000993
+    },
+    {
+      "step": "Read handwriting",
+      "model": "nvidia/Nemotron-3.5-Super-VL",
+      "seconds": 3.19,
+      "prompt_tokens": 2514,
+      "completion_tokens": 310,
+      "cost_usd": 0.001033
+    },
+    {
+      "step": "Read handwriting",
+      "model": "nvidia/Nemotron-3.5-Super-VL",
+      "seconds": 2.91,
+      "prompt_tokens": 2514,
+      "completion_tokens": 280,
+      "cost_usd": 0.001006
+    },
+    {
+      "step": "Read handwriting",
+      "model": "nvidia/Nemotron-3.5-Super-VL",
+      "seconds": 2.88,
+      "prompt_tokens": 2514,
+      "completion_tokens": 289,
+      "cost_usd": 0.001014
+    },
+    {
+      "step": "Grade answers",
+      "model": "nvidia/Nemotron-3-Ultra-550b-a55b",
+      "seconds": 6.47,
+      "prompt_tokens": 1246,
+      "completion_tokens": 1906,
+      "cost_usd": 0.006964
+    },
+    {
+      "step": "Grade answers",
+      "model": "nvidia/Nemotron-3-Ultra-550b-a55b",
+      "seconds": 8.59,
+      "prompt_tokens": 1201,
+      "completion_tokens": 2771,
+      "cost_usd": 0.009514
+    },
+    {
+      "step": "Grade answers",
+      "model": "nvidia/Nemotron-3-Ultra-550b-a55b",
+      "seconds": 8.08,
+      "prompt_tokens": 1226,
+      "completion_tokens": 2799,
+      "cost_usd": 0.009623
+    },
+    {
+      "step": "Grade answers",
+      "model": "nvidia/Nemotron-3-Ultra-550b-a55b",
+      "seconds": 10.16,
+      "prompt_tokens": 1216,
+      "completion_tokens": 3369,
+      "cost_usd": 0.011323
+    },
+    {
+      "step": "Read handwriting",
+      "model": "nvidia/Nemotron-3.5-Super-VL",
+      "seconds": 1.66,
+      "prompt_tokens": 2514,
+      "completion_tokens": 299,
+      "cost_usd": 0.001023
+    },
+    {
+      "step": "Read handwriting",
+      "model": "nvidia/Nemotron-3.5-Super-VL",
+      "seconds": 2.3,
+      "prompt_tokens": 2514,
+      "completion_tokens": 300,
+      "cost_usd": 0.001024
+    },
+    {
+      "step": "Read handwriting",
+      "model": "nvidia/Nemotron-3.5-Super-VL",
+      "seconds": 2.47,
+      "prompt_tokens": 2514,
+      "completion_tokens": 283,
+      "cost_usd": 0.001009
+    },
+    {
+      "step": "Read handwriting",
+      "model": "nvidia/Nemotron-3.5-Super-VL",
+      "seconds": 2.76,
+      "prompt_tokens": 2514,
+      "completion_tokens": 351,
+      "cost_usd": 0.00107
+    },
+    {
+      "step": "Grade answers",
+      "model": "nvidia/Nemotron-3-Ultra-550b-a55b",
+      "seconds": 7.1,
+      "prompt_tokens": 1236,
+      "completion_tokens": 2500,
+      "cost_usd": 0.008736
+    },
+    {
+      "step": "Grade answers",
+      "model": "nvidia/Nemotron-3-Ultra-550b-a55b",
+      "seconds": 7.05,
+      "prompt_tokens": 1287,
+      "completion_tokens": 2374,
+      "cost_usd": 0.008409
+    },
+    {
+      "step": "Grade answers",
+      "model": "nvidia/Nemotron-3-Ultra-550b-a55b",
+      "seconds": 7.73,
+      "prompt_tokens": 1219,
+      "completion_tokens": 2600,
+      "cost_usd": 0.009019
+    },
+    {
+      "step": "Read handwriting",
+      "model": "nvidia/Nemotron-3.5-Super-VL",
+      "seconds": 1.88,
+      "prompt_tokens": 2514,
+      "completion_tokens": 265,
+      "cost_usd": 0.000993
+    },
+    {
+      "step": "Grade answers",
+      "model": "nvidia/Nemotron-3-Ultra-550b-a55b",
+      "seconds": 9.9,
+      "prompt_tokens": 1236,
+      "completion_tokens": 3335,
+      "cost_usd": 0.011241
+    },
+    {
+      "step": "Read handwriting",
+      "model": "nvidia/Nemotron-3.5-Super-VL",
+      "seconds": 2.57,
+      "prompt_tokens": 2514,
+      "completion_tokens": 310,
+      "cost_usd": 0.001033
+    },
+    {
+      "step": "Read handwriting",
+      "model": "nvidia/Nemotron-3.5-Super-VL",
+      "seconds": 2.34,
+      "prompt_tokens": 2514,
+      "completion_tokens": 280,
+      "cost_usd": 0.001006
+    },
+    {
+      "step": "Read handwriting",
+      "model": "nvidia/Nemotron-3.5-Super-VL",
+      "seconds": 1.67,
+      "prompt_tokens": 2514,
+      "completion_tokens": 289,
+      "cost_usd": 0.001014
+    },
+    {
+      "step": "Grade answers",
+      "model": "nvidia/Nemotron-3-Ultra-550b-a55b",
+      "seconds": 9.53,
+      "prompt_tokens": 1201,
+      "completion_tokens": 2333,
+      "cost_usd": 0.0082
+    },
+    {
+      "step": "Grade answers",
+      "model": "nvidia/Nemotron-3-Ultra-550b-a55b",
+      "seconds": 7.87,
+      "prompt_tokens": 1246,
+      "completion_tokens": 2095,
+      "cost_usd": 0.007531
+    },
+    {
+      "step": "Grade answers",
+      "model": "nvidia/Nemotron-3-Ultra-550b-a55b",
+      "seconds": 6.84,
+      "prompt_tokens": 1226,
+      "completion_tokens": 2415,
+      "cost_usd": 0.008471
+    },
+    {
+      "step": "Grade answers",
+      "model": "nvidia/Nemotron-3-Ultra-550b-a55b",
+      "seconds": 10.17,
+      "prompt_tokens": 1216,
+      "completion_tokens": 3323,
+      "cost_usd": 0.011185
+    }
+  ]
+}

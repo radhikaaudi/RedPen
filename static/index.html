@@ -1,0 +1,267 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Redpen — grades handwritten answer sheets</title>
+  <meta name="description" content="Redpen reads students' handwritten answer sheets, grades them against your rubric with evidence, and shows what the class misunderstood. Built with NVIDIA Nemotron on Nebius Token Factory." />
+  <meta name="theme-color" content="#f4ede1" />
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='8' fill='%237a2232'/><path d='M9 22l11-11 3 3-11 11H9z' fill='%23f7f1e6'/></svg>" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@600;700&family=Fraunces:ital,opsz,wght@0,9..144,500;0,9..144,600;0,9..144,700;1,9..144,500&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <script src="https://cdn.tailwindcss.com/3.4.16"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ["Inter", "system-ui", "sans-serif"],
+            display: ["Fraunces", "Georgia", "serif"],
+            hand: ["Caveat", "cursive"],
+          },
+          colors: {
+            pen: { DEFAULT: "#7a2232", dark: "#5a1724", soft: "#f2e2de" },
+            ink: { DEFAULT: "#2f2a25", soft: "#6f675c" },
+            paper: "#f4ede1",
+            cream: { 50: "#fdfaf4", 100: "#f8f2e7", 200: "#eee4d3", 300: "#e1d4be" },
+            sage: { 100: "#e6eae1", 200: "#cfd6c8", 300: "#b4bfae", 400: "#98a594", 500: "#7f8d7b", 600: "#657362", 700: "#4f5b4c", 800: "#3b4539" },
+            brass: { DEFAULT: "#94702d", soft: "#f3e8cd" },
+          },
+        },
+      },
+    };
+  </script>
+  <link rel="stylesheet" href="/static/styles.css" />
+</head>
+<body class="text-ink font-sans antialiased">
+  <!-- Dynamic island: live status for every model call -->
+  <div id="island" class="island no-print" role="status" aria-live="polite">
+    <div id="islandInner" class="island-inner">
+      <span class="island-icon">
+        <span class="island-ring" id="islandRing"></span>
+        <span class="island-spin"></span>
+        <svg class="island-check" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5" /></svg>
+      </span>
+      <span id="islandText" class="island-text"></span>
+      <span id="islandBadge"></span>
+    </div>
+  </div>
+
+  <header class="site-header no-print">
+    <div class="mx-auto flex max-w-6xl items-center justify-between gap-3 px-4 py-3 sm:px-6">
+      <a href="/" class="flex items-center gap-3" aria-label="Redpen home">
+        <span class="logo-nib" aria-hidden="true">
+          <svg viewBox="0 0 24 24"><path d="M4 20l1.2-4.8L15.5 4.9a1.6 1.6 0 012.3 0l1.3 1.3a1.6 1.6 0 010 2.3L8.8 18.8 4 20z" /><path d="M13.5 7l3.5 3.5" /></svg>
+        </span>
+        <span class="logo-word font-hand">Redpen</span>
+        <span class="hidden text-sm text-ink-soft md:inline">grades handwritten answer sheets</span>
+      </a>
+      <button id="ledgerBtn" class="ledger-btn" aria-label="Open model ledger">
+        <span class="led"></span>
+        <span class="hidden sm:inline">Model ledger</span>
+        <span id="ledgerTotal" class="ledger-total tabular-nums">$0.000</span>
+      </button>
+    </div>
+  </header>
+
+  <main class="mx-auto max-w-6xl px-4 pb-16 sm:px-6 no-print">
+    <!-- Hero -->
+    <section id="hero" class="hero">
+      <div class="grid items-center gap-12 lg:grid-cols-[1.05fr_1fr] lg:gap-16">
+        <div>
+          <p class="eyebrow rise" style="--d: 0ms"><span class="eyebrow-dot"></span>For teachers · Built on NVIDIA Nemotron</p>
+          <h1 id="heroTitle" class="hero-title">A stack of handwritten answer sheets, <span class="highlight">graded before your tea gets cold.</span></h1>
+          <p class="hero-sub rise" style="--d: 650ms">Photograph the sheets. Redpen reads the handwriting, marks every rubric point with the student's own words as evidence, flags anything it is unsure about, and tells you what the class misunderstood. You stay in charge of every mark.</p>
+          <div class="mt-8 flex flex-wrap gap-3 rise" style="--d: 800ms">
+            <button id="trySample" class="btn-primary btn-lg magnetic">
+              <span>Try it with a sample class</span>
+              <svg class="btn-arrow" viewBox="0 0 20 20" aria-hidden="true"><path d="M4 10h11M11 5.5L15.5 10 11 14.5" /></svg>
+            </button>
+            <button id="tryMessy" class="btn-ghost btn-lg magnetic">Try messy handwriting</button>
+          </div>
+          <p class="mt-4 text-sm text-ink-soft rise" style="--d: 900ms">Or <a href="#step1" class="link">use your own answer sheets</a> — no sign-up.</p>
+        </div>
+
+        <div id="heroVisual" class="hero-visual rise" style="--d: 300ms">
+          <div id="sheetStack" class="sheet-stack">
+            <div class="sheet sheet-back2"></div>
+            <div class="sheet sheet-back1"></div>
+            <div class="sheet sheet-front">
+              <div class="sheet-crop">
+                <img src="/samples/sheets/meera_iyer.jpg" alt="Meera's handwritten science answer sheet" width="1240" height="1754" />
+                <span class="scan-beam" aria-hidden="true"></span>
+                <svg class="pen-marks" viewBox="0 0 1240 820" aria-hidden="true">
+                  <path class="pm pm-1" pathLength="1" d="M688 262c22 6 40-6 62 0s40 6 62 0 40-6 62 0 20 4 26 2" />
+                  <text class="pm-text pm-2" x="1080" y="300">1/3</text>
+                  <text class="pm-text pm-3" x="1010" y="430">1½/3</text>
+                  <path class="pm pm-4" pathLength="1" d="M470 500l70 60M540 500l-70 60" />
+                  <text class="pm-text pm-5" x="1060" y="555">0/2</text>
+                  <path class="pm pm-6" pathLength="1" d="M800 650l22 26 48-60" />
+                  <text class="pm-text pm-7" x="950" y="690">1/2</text>
+                </svg>
+              </div>
+              <div class="stamp" aria-hidden="true"><span>3½</span><small>/10</small></div>
+              <div class="paperclip" aria-hidden="true"></div>
+            </div>
+          </div>
+
+          <div class="note note-a" aria-hidden="true">
+            <span class="badge badge-reason">Ultra</span>
+            <p><span class="font-semibold">Misconception:</span> “take in oxygen” — confusing photosynthesis with respiration.</p>
+          </div>
+          <div class="note note-b" aria-hidden="true">
+            <span class="badge badge-vision">Super VL</span>
+            <p>Read word-for-word, mistakes included.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Proof strip -->
+      <div class="proof" data-reveal>
+        <div class="proof-item"><span class="proof-num" data-count="99.2" data-dec="1" data-suf="%">99.2%</span><span class="proof-label">reading accuracy on neat sheets</span></div>
+        <div class="proof-item"><span class="proof-num" data-count="97" data-suf="%">97%</span><span class="proof-label">within ½ mark on messy handwriting</span></div>
+        <div class="proof-item"><span class="proof-num">≈ 1¢</span><span class="proof-label">per sheet, read + graded</span></div>
+        <div class="proof-item"><span class="proof-num" data-count="11" data-pre="~" data-suf="s">~11s</span><span class="proof-label">per sheet, three in parallel</span></div>
+      </div>
+    </section>
+
+    <!-- How it works -->
+    <section class="mt-20" data-reveal>
+      <div class="section-head">
+        <p class="kicker">How it works</p>
+        <h2 class="section-title">One NVIDIA Nemotron model per job</h2>
+        <p class="section-sub">Served on Nebius Token Factory. Models judge — totals and statistics are computed in code, never by the model.</p>
+      </div>
+      <ol class="pipeline">
+        <li class="pipe-step" style="--i: 0"><span class="pipe-num">1</span><span class="badge badge-fast">Lightning</span><p>Turns your answer key into a precise, point-by-point rubric</p></li>
+        <li class="pipe-step" style="--i: 1"><span class="pipe-num">2</span><span class="badge badge-vision">Super VL</span><p>Reads each handwritten sheet word-for-word — mistakes included</p></li>
+        <li class="pipe-step" style="--i: 2"><span class="pipe-num">3</span><span class="badge badge-reason">Ultra</span><p>Reasons through every rubric point and quotes the evidence</p></li>
+        <li class="pipe-step" style="--i: 3"><span class="pipe-num">4</span><span class="badge badge-reason">Ultra</span><p>Finds shared misconceptions and plans tomorrow's reteach</p></li>
+        <li class="pipe-step" style="--i: 4"><span class="pipe-num">5</span><span class="badge badge-reason">Ultra</span><p>Translates feedback slips for parents</p></li>
+      </ol>
+    </section>
+
+    <!-- Step 1 -->
+    <section id="step1" class="card mt-20" data-reveal>
+      <div class="card-head">
+        <span class="step-num">1</span>
+        <div>
+          <h2 class="card-title">Answer key</h2>
+          <p class="card-sub">Paste your questions, marks and model answers — plain text is fine. Marking points help.</p>
+        </div>
+      </div>
+      <div class="notepad">
+        <textarea id="answerKey" rows="10" spellcheck="false" placeholder="Q1. What is photosynthesis? (3 marks)&#10;Answer: ...&#10;- 1 mark: ..."></textarea>
+      </div>
+      <div class="mt-5 flex flex-wrap items-center gap-3">
+        <button id="buildRubric" class="btn-primary">Build rubric</button>
+        <span class="badge badge-fast">Lightning</span>
+        <span id="rubricStatus" class="text-sm text-ink-soft"></span>
+      </div>
+      <div id="rubricView" class="mt-7 hidden"></div>
+    </section>
+
+    <!-- Step 2 -->
+    <section id="step2" class="card opacity-50" aria-disabled="true" data-reveal>
+      <div class="card-head">
+        <span class="step-num">2</span>
+        <div>
+          <h2 class="card-title">Answer sheets</h2>
+          <p class="card-sub">Drop photos — one student per photo. Add more pages to a student with “+ page”. JPG or PNG.</p>
+        </div>
+      </div>
+      <label id="dropzone" class="dropzone">
+        <input id="fileInput" type="file" accept="image/*" multiple class="hidden" />
+        <span class="dz-icon" aria-hidden="true">
+          <svg viewBox="0 0 24 24"><path d="M12 16V5M7.5 9.5L12 5l4.5 4.5" /><path d="M4 15v3a2 2 0 002 2h12a2 2 0 002-2v-3" /></svg>
+        </span>
+        <span class="text-base font-semibold">Drop answer-sheet photos here</span>
+        <span class="mt-1 text-sm text-ink-soft">or click to choose · phone photos are fine</span>
+      </label>
+      <ul id="studentList" class="student-list"></ul>
+      <div class="mt-5 flex flex-wrap items-center gap-3">
+        <button id="gradeAll" class="btn-primary" disabled>Grade all</button>
+        <span class="badge badge-vision">Super VL</span><span class="badge badge-reason">Ultra</span>
+        <span id="gradeStatus" class="text-sm text-ink-soft"></span>
+      </div>
+    </section>
+
+    <!-- Step 3 -->
+    <section id="step3" class="card hidden">
+      <div class="card-head">
+        <span class="step-num">3</span>
+        <div class="flex-1">
+          <h2 class="card-title">Results</h2>
+          <p class="card-sub">Open a student to see each mark, the evidence behind it, and to adjust anything. Flagged answers need a human look.</p>
+        </div>
+        <button id="exportCsv" class="btn-ghost btn-sm hidden sm:inline-flex">Export CSV</button>
+      </div>
+      <div class="well overflow-x-auto">
+        <table class="results-table w-full text-left text-sm">
+          <thead>
+            <tr id="resultsHead"></tr>
+          </thead>
+          <tbody id="resultsBody"></tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- Step 4 -->
+    <section id="step4" class="card hidden">
+      <div class="card-head">
+        <span class="step-num">4</span>
+        <div class="flex-1">
+          <h2 class="card-title">Class insights</h2>
+          <p class="card-sub">What the class misunderstood, who needs support, and what to reteach tomorrow. Uses your corrected marks.</p>
+        </div>
+      </div>
+      <div class="flex flex-wrap items-center gap-3">
+        <button id="buildReport" class="btn-primary">Generate class insights</button>
+        <span class="badge badge-reason">Ultra</span>
+        <span id="reportStatus" class="text-sm text-ink-soft"></span>
+      </div>
+      <div id="reportView" class="mt-7"></div>
+    </section>
+  </main>
+
+  <footer class="site-footer no-print">
+    <div class="mx-auto flex max-w-6xl flex-wrap items-center justify-between gap-3 px-4 py-8 text-sm text-ink-soft sm:px-6">
+      <span><span class="font-hand text-2xl text-pen">Redpen</span> — your red pen, now with a teaching assistant.</span>
+      <span>NVIDIA Nemotron · Nebius Token Factory · MIT licensed</span>
+    </div>
+  </footer>
+
+  <!-- Student detail drawer -->
+  <div id="drawer" class="overlay drawer hidden no-print">
+    <div class="overlay-backdrop" data-close></div>
+    <div class="drawer-panel">
+      <div class="drawer-head">
+        <div id="drawerTitle" class="min-w-0"></div>
+        <button class="btn-ghost btn-sm" data-close>Close</button>
+      </div>
+      <div id="drawerBody" class="grid flex-1 gap-0 overflow-hidden lg:grid-cols-[minmax(0,0.9fr)_minmax(0,1.1fr)]"></div>
+    </div>
+  </div>
+
+  <!-- Ledger modal -->
+  <div id="ledger" class="overlay modal hidden no-print">
+    <div class="overlay-backdrop" data-close></div>
+    <div class="modal-panel">
+      <div class="mb-5 flex items-start justify-between gap-3">
+        <div>
+          <h3 class="font-display text-2xl font-semibold">Model ledger</h3>
+          <p class="mt-1 text-sm text-ink-soft">Every Nemotron call on Nebius Token Factory this session: which model, what step, tokens, time and cost.</p>
+        </div>
+        <button class="btn-ghost btn-sm" data-close>Close</button>
+      </div>
+      <div id="ledgerBody"></div>
+    </div>
+  </div>
+
+  <div id="toast" class="toast no-print" role="status" aria-live="polite"></div>
+  <div id="printArea" class="print-only"></div>
+
+  <script src="/static/app.js"></script>
+</body>
+</html>

@@ -1,0 +1,20 @@
+Class 8 Science — Unit Test 3 (10 marks)
+
+Q1. What is photosynthesis? Write its word equation. (3 marks)
+Answer: Green plants make their own food (glucose) using sunlight.
+- 1 mark: plants make their own food / glucose using sunlight energy
+- 1 mark: raw materials are carbon dioxide and water (chlorophyll traps the light)
+- 1 mark: oxygen is released / correct word equation: carbon dioxide + water -> glucose + oxygen
+
+Q2. Why does iron rust? Give two ways to prevent rusting. (3 marks)
+- 1 mark: iron reacts with oxygen AND water/moisture (both needed for the full mark)
+- 1 mark: first valid prevention method (painting, oiling/greasing, galvanising, keeping dry, etc.)
+- 1 mark: second, different valid prevention method
+
+Q3. A car travels 150 km in 3 hours. Find its average speed. Show your working. (2 marks)
+- 1 mark: correct formula speed = distance / time with values substituted
+- 1 mark: final answer 50 km/h WITH unit (half mark if the unit is missing)
+
+Q4. Why do we see lightning before we hear thunder? (2 marks)
+- 1 mark: light travels much faster than sound
+- 1 mark: both are produced at the same time, so the sound takes longer to reach us

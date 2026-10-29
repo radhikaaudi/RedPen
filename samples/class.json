@@ -1,0 +1,85 @@
+{
+  "note": "Synthetic sample class. Answers were written to include common Class 8 misconceptions; 'marks' are reference marks set by hand following samples/answer_key.txt, used as ground truth by eval/evaluate.py.",
+  "students": [
+    {
+      "name": "Aarav Sharma",
+      "answers": {
+        "Q1": "Photosynthesis is the process by which green plants make their own food (glucose) using sunlight. They take carbon dioxide from air and water from soil, chlorophyll traps the sunlight. Oxygen is given out. carbon dioxide + water -> glucose + oxygen",
+        "Q2": "Iron rusts when it reacts with oxygen and moisture (water) in the air. To prevent it: 1) painting 2) galvanisation (coating with zinc)",
+        "Q3": "Speed = distance / time = 150 km / 3 h = 50 km/h",
+        "Q4": "Light travels much faster than sound, so the light reaches us first even though both are produced at the same time."
+      },
+      "marks": {"Q1": 3, "Q2": 3, "Q3": 2, "Q4": 2}
+    },
+    {
+      "name": "Meera Iyer",
+      "answers": {
+        "Q1": "Plants make food using sunlight. They take in oxygen and water and give out carbon dioxide.",
+        "Q2": "Iron rusts because of water. We can prevent it by oiling.",
+        "Q3": "150 x 3 = 450 km/h",
+        "Q4": "Because light is faster than sound."
+      },
+      "marks": {"Q1": 1, "Q2": 1.5, "Q3": 0, "Q4": 1}
+    },
+    {
+      "name": "Kabir Khan",
+      "answers": {
+        "Q1": "It is the process where plants prepare food from carbon dioxide and water in the presence of sunlight and chlorophyll. Oxygen is released as a by product.",
+        "Q2": "Rusting happens when iron comes in contact with air and moisture. It can be prevented by applying paint or grease.",
+        "Q3": "Speed = 150 / 3 = 50",
+        "Q4": "Thunder is produced after the lightning so we hear it later."
+      },
+      "marks": {"Q1": 3, "Q2": 3, "Q3": 1.5, "Q4": 0}
+    },
+    {
+      "name": "Zoya Ahmed",
+      "answers": {
+        "Q1": "Plants get their food from the soil through their roots. Sunlight helps them to grow.",
+        "Q2": "Iron reacts with oxygen and water to form rust (iron oxide). Prevent by galvanising and by keeping it dry.",
+        "Q3": "Speed = distance / time, 150 / 3 = 50 km/h",
+        "Q4": "Light travels faster than sound. Both happen together but sound takes more time to reach our ears."
+      },
+      "marks": {"Q1": 0, "Q2": 3, "Q3": 2, "Q4": 2}
+    },
+    {
+      "name": "Rohan Verma",
+      "answers": {
+        "Q1": "Photosynthesis - plants use sunlight to make glucose from CO2 and water. Oxygen is released.",
+        "Q2": "Iron rust in rain.",
+        "Q3": "Speed = time / distance = 3 / 150 = 0.02 km/h",
+        "Q4": ""
+      },
+      "marks": {"Q1": 3, "Q2": 0.5, "Q3": 0, "Q4": 0}
+    },
+    {
+      "name": "Ishita Rao",
+      "answers": {
+        "Q1": "Green plants make food using sunlight, water and carbon dioxide. Chlorophyll is needed. They give out oxygen. Equation: carbon dioxide + water -> glucose + oxygen",
+        "Q2": "Iron rusts due to oxygen and moisture. Prevention: paint it, oil it.",
+        "Q3": "s = d / t = 150 km / 3 h = 50 km/h",
+        "Q4": "Sound and light are produced at the same time but light is faster so we see it first."
+      },
+      "marks": {"Q1": 3, "Q2": 3, "Q3": 2, "Q4": 2}
+    },
+    {
+      "name": "Dev Malhotra",
+      "answers": {
+        "Q1": "In photosynthesis plants breathe in carbon dioxide and breathe out oxygen, using sunlight to make food.",
+        "Q2": "Rusting is a chemical change in which iron reacts with oxygen. It is prevented by painting.",
+        "Q3": "150 / 3 = 50 km per hour",
+        "Q4": "Because our eyes are faster than our ears."
+      },
+      "marks": {"Q1": 2.5, "Q2": 1.5, "Q3": 1.5, "Q4": 0}
+    },
+    {
+      "name": "Ananya Das",
+      "answers": {
+        "Q1": "Photosynthesis is how plants make food in their leaves using sunlight.",
+        "Q2": "Iron + oxygen + water = rust. Prevent: galvanization, painting, oiling.",
+        "Q3": "speed = 150 / 3 = 50 km/h",
+        "Q4": "Light travels faster (3 lakh km per second) than sound (about 340 m per second)."
+      },
+      "marks": {"Q1": 1, "Q2": 3, "Q3": 2, "Q4": 1.5}
+    }
+  ]
+}
