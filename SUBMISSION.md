@@ -13,6 +13,7 @@ Copy these into the Devpost “Enter a Submission” form. Replace everything in
 - [ ] Demo video < 3 min, **public** on YouTube, says “NVIDIA Nemotron” and “Nebius Token Factory” out loud
 - [ ] README demo + video links filled in
 - [ ] Track selected: **Best Apps & Agents**
+- [ ] Image gallery: upload `docs/architecture.png` first, then the screenshots in `docs/screenshots/`
 - [ ] Feedback section filled (required, and eligible for the Most Valuable Feedback prize)
 - [ ] Optional: replace one synthetic sheet in the video with a real handwritten page (yours), to show it works on real handwriting
 
@@ -42,19 +43,23 @@ Redpen grades handwritten answer sheets end to end:
 1. **Answer key → rubric.** The teacher pastes their answer key in plain text. Redpen turns it into precise, checkable marking points.
 2. **Reads the handwriting.** Each photographed sheet is transcribed word for word — *including the student's mistakes*, because you can't grade what you've auto-corrected. Unreadable words are highlighted.
 3. **Grades with evidence.** Every rubric point gets ✓ / ½ / ✗, the exact quote from the student's answer that earned or lost the mark, a one-line reason, the misconception it reveals, and feedback for the student.
-4. **Asks for help when unsure.** Answers with messy handwriting or low grader confidence are flagged. The teacher can change any mark with one click.
-5. **Class insights.** Redpen groups shared misconceptions across the class (“2 students think rusting needs only water”), shows how each question went, lists who needs support, and writes a 3-step reteach plan with 10-minute classroom activities.
-6. **Feedback slips for parents.** Printable per-student slips, translatable into Hindi, Tamil, Bengali, Marathi, Spanish or French.
+4. **Marks the working, not just the answer.** Maths and multi-step answers get **step marking**: each line of working is checked, and a slip loses only that step. A later step that correctly uses the wrong value keeps its method mark (error carried forward), and a different valid method earns full marks.
+5. **Asks for help when it should.** If an answer can't be read, Redpen hands it to the teacher to mark ✋ instead of guessing. Messy handwriting, low grader confidence and right methods that lost marks are flagged for a check. The teacher can change any mark with one click.
+6. **Sentiment: was the thinking right?** Every answer gets a **sentiment**: the direction of the student's thinking (right / partly right / wrong), judged apart from the final answer. **When the thinking was right but the answer came out wrong, Redpen asks the teacher to step in** 🧭, because a quick word fixes a slip faster than a red cross. Class insights list every such student.
+7. **Class insights.** Redpen groups shared misconceptions across the class (“2 students think rusting needs only water”), shows how each question went, lists who needs support, and writes a 3-step reteach plan with 10-minute classroom activities.
+8. **Feedback slips for parents.** Printable per-student slips, translatable into Hindi, Tamil, Bengali, Marathi, Spanish or French.
 
 A **Model ledger** shows every model call: which Nemotron model, which step, tokens, time and cost. Grading costs about **one US cent per sheet**.
 
 ### How we built it
+*(Architecture diagram: `docs/architecture.png` in the image gallery.)* The teacher's browser holds the session, a stateless FastAPI server checks every model output in code, and three Nemotron models do the reading and judging.
+
 Redpen is a FastAPI backend with a single-page frontend. Every AI step runs on **NVIDIA Nemotron models served by Nebius Token Factory** through its OpenAI-compatible API. Each model has one job:
-- **Nemotron 3.5 Super VL** (vision) reads the sheets. Reasoning is off — this is perception.
-- **Nemotron 3 Ultra** with reasoning on does the grading and the class-level misconception analysis, the two steps where judgement matters most. With reasoning off, it also translates feedback slips for parents.
+- **Nemotron 3.5 Super VL** (vision) is Redpen's handwriting OCR, with no separate OCR engine. It goes beyond plain OCR. In one call for all of a student's pages, it returns structured JSON per question: the answer matched to the question number the student wrote, word for word with mistakes kept, crossed-out words left out, `[?]` for unreadable words, a legibility rating, and a description of any diagram. It costs about $0.001 and takes about 5 s per sheet. Reasoning is off, because this is perception.
+- **Nemotron 3 Ultra** with reasoning on does the grading (rubric points, step marking and sentiment) and the class-level misconception analysis, the two steps where judgement matters most. With reasoning off, it also translates feedback slips for parents.
 - **Nemotron 3.5 Lightning** structures the rubric, keeping the app fast and the credits for grading.
 
-We switch reasoning per call with `chat_template_kwargs.enable_thinking` and use JSON mode everywhere. A key design rule: **models judge, code counts.** Totals, clamping marks to the rubric and every class statistic are computed in Python, and any “evidence” quote that doesn't actually appear in the student's transcription is discarded.
+We switch reasoning per call with `chat_template_kwargs.enable_thinking` and use JSON mode everywhere. A key design rule: **models judge, code counts.** Totals, clamping marks to the rubric and every class statistic are computed in Python, and any “evidence” quote that doesn't actually appear in the student's transcription is discarded. Python, not the model, decides which answers go to the teacher: unreadable ones, and right thinking that ended in a wrong answer.
 
 We built an evaluation harness (`eval/evaluate.py`) with two sets of the same 8 students' answers. One set is neat. The other is messy handwriting photographed badly: cramped, uneven letters, scribbles, blur, shadow and skew, with one sheet near-illegible on purpose.
 - **Neat sheets** (96 graded answers): **99.2% reading accuracy, 83% exact agreement with reference marks, 100% within half a mark.**
@@ -123,17 +128,17 @@ Record your screen at 1080p with a voice-over. Hook in the first 30 s, then show
 On screen: a real pile of answer sheets, or the sample sheets.
 > “This is one unit test for one section — and a teacher has five sections. Marking it takes an evening, and students still get just a number. This is Redpen.”
 
-**0:20–0:45 — Setup**
-Click *Try it with a sample class*. The answer key fills in and the rubric appears.
-> “I paste my answer key in plain English. NVIDIA Nemotron 3.5 Lightning, running on Nebius Token Factory, turns it into precise marking points.”
+**0:20–0:45 — Setup + architecture**
+Scroll past the *Architecture* diagram (2–3 seconds), then click *Try it with a sample class*. The answer key fills in and the rubric appears.
+> “Three NVIDIA Nemotron models on Nebius Token Factory, one job each, and plain Python checks their work. I paste my answer key in plain English, and Nemotron 3.5 Lightning turns it into precise marking points.”
 
 **0:45–1:15 — The aha: grading with evidence**
 Click *Grade all*. Status chips move from Reading · Super VL to Grading · Ultra. Open Meera's sheet.
 > “Nemotron Super VL reads each sheet exactly as written, mistakes included. Then Nemotron 3 Ultra reasons through every rubric point. Look: Meera wrote ‘plants take in oxygen’. Redpen quotes her words, marks the point wrong, and names the misconception: she's confusing photosynthesis with respiration.”
 
-**1:15–1:40 — Teacher in control**
-Show a flagged answer, the highlighted unclear word, and a click on + to adjust a mark; the total updates.
-> “When handwriting is unclear or the grader is unsure, Redpen flags it for me. I can change any mark in one click. Totals are always computed in code, never by the AI.”
+**1:15–1:40 — Teacher in control (use *Try a maths test* for this part)**
+Open Arjun's sheet: step marking, “Sentiment · Right direction”, and the 🧭 teacher intervention banner. Then Kunal's ✋ unreadable Q1; click + to mark it, and the total updates.
+> “On a maths test Redpen marks the working, not just the answer: Arjun slipped on one step, so he keeps the method marks. His thinking was right but his answer was wrong, so Redpen asks me to step in. When it can't read an answer, it hands it to me instead of guessing. Totals are always computed in code, never by the AI.”
 
 **1:40–2:15 — Class insights**
 Click *Generate class insights*. Scroll through the misconceptions, the reteach plan and the students to support.

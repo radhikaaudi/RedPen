@@ -425,10 +425,14 @@ function recompute(g) {
   for (const q of g.questions) {
     q.score = q.criteria.reduce((a, c) => a + c.awarded, 0);
     q.needs_review = q.review_reasons.length > 0 && !q.checked;
+    // Once the teacher has set or confirmed the marks (or stepped in), the answer no longer needs them.
+    if (q.checked) q.needs_teacher = q.needs_intervention = false;
   }
   g.score = g.questions.reduce((a, q) => a + q.score, 0);
   g.percent = g.total ? Math.round((1000 * g.score) / g.total) / 10 : 0;
   g.needs_review = g.questions.filter((q) => q.needs_review).length;
+  g.needs_teacher = g.questions.filter((q) => q.needs_teacher).length;
+  g.needs_intervention = g.questions.filter((q) => q.needs_intervention).length;
 }
 
 function statusChip(s) {
@@ -438,6 +442,8 @@ function statusChip(s) {
     case "grading":
       return `<span class="chip chip-run"><span class="spinner"></span> Grading · Ultra</span>`;
     case "done":
+      if (s.grading.needs_teacher) return `<span class="chip chip-err">✋ ${s.grading.needs_teacher} for you to mark</span>`;
+      if (s.grading.needs_intervention) return `<span class="chip chip-err">🧭 Step in · ${s.grading.needs_intervention}</span>`;
       return s.grading.needs_review
         ? `<span class="chip chip-warn">⚑ ${s.grading.needs_review} to check</span>`
         : `<span class="chip chip-ok">✓ Done</span>`;
@@ -463,7 +469,11 @@ function renderResults() {
           if (!gq) return `<td class="text-center text-sage-400">·</td>`;
           const pct = q.max_marks ? gq.score / q.max_marks : 0;
           const tone = pct >= 0.99 ? "score-full" : pct === 0 ? "score-zero" : "";
-          return `<td class="text-center tabular-nums ${tone}">${fmt(gq.score)}${gq.needs_review ? '<span class="flag-star" title="Needs a check">*</span>' : ""}</td>`;
+          if (gq.needs_teacher) return `<td class="text-center"><span class="hand-cell" title="Couldn't read — needs you to mark it">✋</span></td>`;
+          const mark = gq.needs_intervention
+            ? '<span class="flag-star" title="Right thinking, wrong answer — teacher intervention">🧭</span>'
+            : gq.needs_review ? '<span class="flag-star" title="Needs a check">*</span>' : "";
+          return `<td class="text-center tabular-nums ${tone}">${fmt(gq.score)}${mark}</td>`;
         })
         .join("");
       return `<tr data-open="${g ? s.id : ""}">
@@ -518,6 +528,51 @@ function highlightUnclear(text, words) {
   return esc(text).replace(re, (m) => `<span class="unclear" title="${m === "[?]" ? "Unreadable" : "Hard to read"}">${m}</span>`);
 }
 
+// Sentiment = the direction of the student's thinking, judged separately from the final answer.
+const SENTIMENT = {
+  right_direction: ["Right direction", "chip-ok"],
+  partly_right: ["Partly right direction", "chip-warn"],
+  wrong_direction: ["Wrong direction", "chip-err"],
+  unreadable: ["Couldn't read", "chip-wait"],
+  not_attempted: ["Not attempted", "chip-wait"],
+};
+
+function sentimentBlock(q) {
+  if (!SENTIMENT[q.sentiment]) return ""; // graded before sentiment analysis existed
+  const [label, cls] = SENTIMENT[q.sentiment];
+  const answer = q.answer_correct === true ? `<span class="chip chip-ok">Answer ✓</span>` : q.answer_correct === false ? `<span class="chip chip-err">Answer ✗</span>` : "";
+  const steps = (q.steps || [])
+    .map(
+      (st, i) => `<li class="step ${st.ok ? "step-ok" : "step-bad"}">
+        <span class="step-n">${i + 1}</span>
+        <div class="min-w-0"><code class="step-work">${esc(st.work)}</code>${st.note ? `<p class="mt-0.5 text-xs leading-relaxed text-ink-soft">${esc(st.note)}</p>` : ""}</div>
+        <span class="step-mark">${st.ok ? "✓" : "✗"}</span></li>`
+    )
+    .join("");
+  return `<div class="approach mt-4">
+      <div class="flex flex-wrap items-center gap-2">
+        <span class="chip ${cls}" title="Was the student's thinking heading the right way, whatever the final answer?">Sentiment · ${label}</span>
+        ${answer}
+      </div>
+      ${q.sentiment_note ? `<p class="mt-2 text-sm leading-relaxed">${esc(q.sentiment_note)}</p>` : ""}
+      ${steps ? `<p class="mb-1.5 mt-3 text-xs font-semibold uppercase tracking-wider text-sage-600">Step marking — the working, line by line</p><ol class="steps">${steps}</ol>` : ""}
+    </div>`;
+}
+
+function flagBlock(q) {
+  if (!q.needs_review) return "";
+  const teacher = q.needs_teacher ? q.review_reasons[0] : null;
+  const step = q.needs_intervention ? q.review_reasons.find((r) => r.startsWith("Right thinking, wrong answer")) : null;
+  const others = q.review_reasons.filter((r) => r !== teacher && r !== step);
+  const label = teacher ? "I've marked it" : step ? "I've stepped in" : "Mark as checked";
+  const button = `<button class="ml-auto text-xs font-semibold underline" data-check="${esc(q.question_id)}">${label}</button>`;
+  return (
+    (teacher ? `<div class="flag flag-teacher"><span><b>✋ Teacher needed.</b> ${esc(teacher)}. The marks below are only provisional.</span>${others.length ? "" : button}</div>` : "") +
+    (step ? `<div class="flag flag-teacher"><span><b>🧭 Teacher intervention.</b> The student's thinking was in the right direction, but the answer came out wrong. A quick word should fix it — and check the step marks.</span>${others.length ? "" : button}</div>` : "") +
+    (others.length ? `<div class="flag"><span>⚑ ${esc(others.join(" · "))}${others.some((r) => r.includes("please")) ? "" : " — please check"}</span>${button}</div>` : "")
+  );
+}
+
 function openStudent(id) {
   openId = id;
   animateDrawer = true;
@@ -532,7 +587,7 @@ function renderDrawer() {
   $("#drawerTitle").innerHTML = `<div class="flex flex-wrap items-baseline gap-x-3">
       <h3 class="truncate font-display text-xl font-semibold">${esc(s.name)}</h3>
       <span class="font-hand text-4xl leading-none text-pen">${fmt(g.score)}/${fmt(g.total)}</span>
-      <span class="text-sm text-ink-soft">${g.percent}%${g.needs_review ? ` · <span class="text-brass font-semibold">⚑ ${g.needs_review} answer${g.needs_review > 1 ? "s" : ""} to check</span>` : ""}</span></div>`;
+      <span class="text-sm text-ink-soft">${g.percent}%${g.needs_teacher ? ` · <span class="text-pen font-semibold">✋ ${g.needs_teacher} for you to mark</span>` : ""}${g.needs_intervention ? ` · <span class="text-pen font-semibold">🧭 ${g.needs_intervention} to step in</span>` : ""}${g.needs_review ? ` · <span class="text-brass font-semibold">⚑ ${g.needs_review} answer${g.needs_review > 1 ? "s" : ""} to check</span>` : ""}</span></div>`;
 
   const pages = s.previews
     .map((p, i) => `<a href="${p}" target="_blank" rel="noopener"><img src="${p}" alt="Page ${i + 1} of ${esc(s.name)}'s answer sheet" class="page-img" /></a>`)
@@ -569,14 +624,13 @@ function renderDrawer() {
           <p class="text-sm leading-relaxed"><span class="font-semibold text-pen">${esc(q.question_id)}.</span> ${esc(rq?.question)}</p>
           <span class="font-hand text-3xl leading-none text-pen">${fmt(q.score)}/${fmt(q.max)}</span>
         </div>
-        ${q.needs_review ? `<div class="flag">
-            <span>⚑ ${esc(q.review_reasons.join(" · "))} — please check</span>
-            <button class="ml-auto text-xs font-semibold underline" data-check="${esc(q.question_id)}">Mark as checked</button></div>` : ""}
+        ${flagBlock(q)}
         <div class="mt-4">
           <p class="mb-1.5 flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-sage-600">What the student wrote ${badgeFor(state.models.vision)}</p>
           <p class="transcript">${rd.attempted ? highlightUnclear(rd.transcription, rd.unclear_words) : '<span class="text-ink-soft">Not attempted</span>'}</p>
           ${rd.diagram ? `<p class="mt-1.5 text-xs text-ink-soft">Diagram/working: ${esc(rd.diagram)}</p>` : ""}
         </div>
+        ${sentimentBlock(q)}
         <p class="mb-1.5 mt-5 flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-sage-600">Marking ${badgeFor(state.models.reasoning)}</p>
         <ul class="space-y-2">${criteria}</ul>
         ${q.misconception ? `<p class="mt-4 text-sm leading-relaxed"><span class="chip chip-err">Misconception</span> ${esc(q.misconception)}</p>` : ""}
@@ -712,6 +766,39 @@ async function buildReport() {
   }
 }
 
+function sentimentReport(st) {
+  if (!st.sentiment) return "";
+  const total = Object.values(st.sentiment).reduce((a, b) => a + b, 0) || 1;
+  const tones = { right_direction: "bar-ok", partly_right: "bar-mid", wrong_direction: "bar-low", unreadable: "bar-ink", not_attempted: "bar-ink" };
+  const rows = Object.entries(st.sentiment)
+    .filter(([, n]) => n)
+    .map(([k, n], i) => {
+      const pct = Math.round((100 * n) / total);
+      return `<div><div class="mb-1 flex justify-between text-sm"><span>${SENTIMENT[k][0]}</span><span class="font-semibold tabular-nums">${n}</span></div>
+        <div class="bar"><span class="${tones[k]}" style="width:${pct}%; --i:${i}"></span></div></div>`;
+    })
+    .join("");
+  const steps = (st.intervention || [])
+    .map(
+      (x) => `<li class="tile text-sm leading-relaxed"><div class="flex flex-wrap items-center gap-2"><span class="font-semibold text-pen">${esc(x.name)}</span>
+        <span class="chip chip-ok">Right direction</span><span class="chip chip-err">Answer ✗</span><span class="text-xs text-ink-soft">${esc(x.question_id)}</span></div>
+        ${x.note ? `<p class="mt-1 text-ink-soft">${esc(x.note)}</p>` : ""}</li>`
+    )
+    .join("");
+  return `<div class="mt-8 grid gap-8 lg:grid-cols-2">
+      <div class="soft-card">
+        <h3 class="subhead">Sentiment — how students were thinking</h3>
+        <p class="mb-3 text-sm leading-relaxed text-ink-soft">Was each answer's thinking heading the right way, whatever the final answer?</p>
+        <div class="space-y-3">${rows}</div>
+      </div>
+      <div class="soft-card">
+        <h3 class="subhead">Right thinking, wrong answer — step in</h3>
+        <p class="mb-3 text-sm leading-relaxed text-ink-soft">These students were thinking the right way but the answer came out wrong. A quick word from you should fix it.</p>
+        ${steps ? `<ul class="space-y-2">${steps}</ul>` : `<p class="text-sm">No answers need an intervention.</p>`}
+      </div>
+    </div>`;
+}
+
 function renderReport() {
   const r = state.report;
   if (!r) return ($("#reportView").innerHTML = "");
@@ -722,9 +809,10 @@ function renderReport() {
     <div class="stagger grid grid-cols-2 gap-3 sm:grid-cols-4">
       ${tile("Class average", st.average_percent + "%", "text-pen", 0)}
       ${tile("Highest / lowest", `${st.highest}% / ${st.lowest}%`, "", 1)}
-      ${tile("Students", st.students, "", 2)}
-      ${tile("Answers to check", st.needs_review, st.needs_review ? "text-brass" : "", 3)}
+      ${tile("Teacher intervention", (st.intervention || []).length, (st.intervention || []).length ? "text-pen" : "", 2)}
+      ${tile("Unreadable — for you", st.needs_teacher ?? 0, st.needs_teacher ? "text-pen" : "", 3)}
     </div>
+    ${sentimentReport(st)}
 
     <div class="mt-8 grid gap-8 lg:grid-cols-2">
       <div class="soft-card">
@@ -801,11 +889,11 @@ function renderReport() {
 // ------------------------------------------------------------------ sample class
 
 async function loadSample(set = "neat") {
-  const btn = set === "messy" ? $("#tryMessy") : $("#trySample");
+  const btn = { messy: $("#tryMessy"), maths: $("#tryMaths") }[set] || $("#trySample");
   const label = btn.innerHTML;
   btn.disabled = true;
   btn.textContent = "Loading sample class…";
-  island.show(set === "messy" ? "Loading messy handwriting samples" : "Loading a sample class");
+  island.show({ messy: "Loading messy handwriting samples", maths: "Loading a maths test" }[set] || "Loading a sample class");
   try {
     const sample = await api(`/api/sample?set=${set}`);
     $("#answerKey").value = sample.answer_key;
@@ -821,7 +909,8 @@ async function loadSample(set = "neat") {
     }
     $("#step1").scrollIntoView({ behavior: "smooth", block: "start" });
     await buildRubric();
-    toast(`Sample class of 8 loaded${set === "messy" ? " — messy handwriting" : ""}. Press “Grade all” to start.`);
+    const kind = { messy: " — messy handwriting", maths: " — maths, with step marking" }[set] || "";
+    toast(`Sample class of ${sample.students.length} loaded${kind}. Press “Grade all” to start.`);
     $("#step2").scrollIntoView({ behavior: "smooth", block: "start" });
   } catch (e) {
     island.hide();
@@ -836,6 +925,7 @@ async function loadSample(set = "neat") {
 
 $("#trySample").onclick = () => loadSample("neat");
 $("#tryMessy").onclick = () => loadSample("messy");
+$("#tryMaths").onclick = () => loadSample("maths");
 $("#buildRubric").onclick = buildRubric;
 $("#gradeAll").onclick = gradeAll;
 $("#buildReport").onclick = buildReport;

@@ -1,0 +1,52 @@
+{
+  "note": "Synthetic maths sample class for step marking, approach checks, unreadable answers and student sentiment. 'illegible' lists answers rendered as unreadable scribble on purpose. 'marks' are reference marks set by hand following answer_key.txt.",
+  "header": "Class 8-B   Maths UT-2",
+  "students": [
+    {
+      "name": "Priya Nair",
+      "answers": {
+        "Q1": "Profit = 15/100 x 2400 = 360. Selling price = CP + profit = 2400 + 360 = Rs 2760",
+        "Q2": "3x + 7 = 25, 3x = 25 - 7 = 18, x = 18/3 = 6",
+        "Q3": "Area = pi r^2 = 22/7 x 7 x 7 = 22 x 7 = 154 cm^2"
+      },
+      "marks": {"Q1": 4, "Q2": 3, "Q3": 3}
+    },
+    {
+      "name": "Arjun Mehta",
+      "answers": {
+        "Q1": "Profit = 15/100 x 2400 = 340. SP = CP + profit = 2400 + 340 = Rs 2740",
+        "Q2": "3x = 25 - 7 = 18, x = 18/3 = 6",
+        "Q3": "Area = 2 pi r = 2 x 22/7 x 7 = 44 cm^2"
+      },
+      "marks": {"Q1": 2, "Q2": 3, "Q3": 0}
+    },
+    {
+      "name": "Riya Kapoor",
+      "answers": {
+        "Q1": "SP = 115% of 2400 = 115/100 x 2400 = Rs 2760",
+        "Q2": "3x = 25 - 7 = 18 so x = 6",
+        "Q3": "A = pi r^2 = 22/7 x 7 x 7 = 22 x 7 = 144 cm^2"
+      },
+      "marks": {"Q1": 4, "Q2": 3, "Q3": 2}
+    },
+    {
+      "name": "Sana Qureshi",
+      "answers": {
+        "Q1": "Selling price = 15/100 x 2400 = Rs 360",
+        "Q2": "3x = 25 + 7 = 32, x = 32/3 = 10.6. I am not sure about this one",
+        "Q3": "pi r^2 = 22/7 x 7 x 7 = 154"
+      },
+      "marks": {"Q1": 2, "Q2": 1, "Q3": 2.5}
+    },
+    {
+      "name": "Kunal Bose",
+      "answers": {
+        "Q1": "Profit = 15/100 x 2400 = 360, SP = 2400 + 360 = 2760",
+        "Q2": "3x = 18, x = 6",
+        "Q3": "I dont know how to do this. I forgot the formula again :( maths is too hard for me"
+      },
+      "illegible": ["Q1"],
+      "marks": {"Q1": 4, "Q2": 3, "Q3": 0}
+    }
+  ]
+}

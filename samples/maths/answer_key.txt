@@ -1,0 +1,18 @@
+Class 8 Maths — Unit Test 2 (10 marks)
+
+Q1. A shopkeeper buys a bicycle for Rs 2400 and sells it at a profit of 15%. Find the selling price. Show your working. (4 marks)
+- 1 mark: profit = 15% of 2400 (15/100 x 2400) written with values
+- 1 mark: profit = Rs 360
+- 1 mark: selling price = cost price + profit (2400 + profit)
+- 1 mark: selling price = Rs 2760
+Step marking: a different correct method (e.g. 115% of 2400) earns all the marks it covers. Error carried forward: if the profit is worked out wrongly but then correctly added to 2400, the "selling price = cost price + profit" mark is still given.
+
+Q2. Solve: 3x + 7 = 25. Show each step. (3 marks)
+- 1 mark: 3x = 25 - 7 = 18
+- 1 mark: x = 18 / 3
+- 1 mark: x = 6
+
+Q3. Find the area of a circle of radius 7 cm. (Take pi = 22/7.) (3 marks)
+- 1 mark: formula area = pi r^2
+- 1 mark: correct substitution 22/7 x 7 x 7
+- 1 mark: answer 154 cm^2 with unit (half mark if the unit is missing)

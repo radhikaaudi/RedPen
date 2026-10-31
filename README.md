@@ -5,7 +5,7 @@ Photograph the sheets. Redpen reads the handwriting, marks every rubric point wi
 
 Built for the **Nebius x NVIDIA Global AI Hackathon** · Track: **Best Apps & Agents** · Runs on **NVIDIA Nemotron** via **Nebius Token Factory**.
 
-- 🌐 **Live demo:** _add your deployed URL here_ — click **“Try it with a sample class”** or **“Try messy handwriting”**, no sign-up needed
+- 🌐 **Live demo:** _add your deployed URL here_ — click **“Try it with a sample class”**, **“Try messy handwriting”** or **“Try a maths test”**, no sign-up needed
 - 🎬 **Demo video:** _add your YouTube link here_
 - 📄 License: [MIT](LICENSE)
 
@@ -28,8 +28,8 @@ Typed-answer auto-graders don't help: most schools still test on paper.
 |---|---|---|
 | 1. Answer key → rubric | Paste the answer key in plain text; Redpen turns it into precise, checkable marking points | **Nemotron 3.5 Lightning** |
 | 2. Read the sheets | Every sheet transcribed word-for-word *including the student's mistakes*; unreadable words highlighted | **Nemotron 3.5 Super VL** (vision) |
-| 3. Grade with evidence | Each rubric point: ✓ / ½ / ✗, the exact quote that earned or lost it, a one-line reason, the misconception it reveals, and feedback to the student | **Nemotron 3 Ultra** (reasoning on) |
-| 4. Teacher review | Low-confidence or hard-to-read answers are flagged ⚑. One click adjusts any mark; totals update instantly | — (pure code) |
+| 3. Grade with evidence | Each rubric point: ✓ / ½ / ✗, the exact quote that earned or lost it, a one-line reason, the misconception it reveals, and feedback to the student. **Step marking** for working: each line is checked, and a slip loses only that step. **Sentiment** — the direction of the student's thinking (right / partly right / wrong) — is judged separately from the final answer | **Nemotron 3 Ultra** (reasoning on) |
+| 4. Teacher review | Unreadable answers go to the teacher ✋ instead of being guessed. Right thinking with a wrong answer is sent to the teacher for intervention 🧭. Low-confidence or hard-to-read answers are flagged ⚑. One click adjusts any mark; totals update instantly | — (pure code) |
 | 5. Class insights | Shared misconceptions grouped across students, per-question breakdown, who needs support, and a 3-step reteach plan with 10-minute classroom activities | **Nemotron 3 Ultra** |
 | 6. Parents | Printable feedback slips, translated into Hindi, Tamil, Bengali, Marathi, Spanish or French | **Nemotron 3 Ultra** (reasoning off) |
 
@@ -60,17 +60,50 @@ On messy sheets, grading stays almost as accurate as on neat ones because marks 
 
 ## How it works
 
-```mermaid
-flowchart LR
-    K[Answer key<br/>plain text] -->|Lightning| R[Structured rubric<br/>marking points]
-    P[Sheet photos] -->|resize, fix rotation| V
-    R --> V[Super VL<br/>verbatim transcription<br/>+ legibility]
-    V --> G[Ultra, reasoning on<br/>per-criterion marks<br/>evidence · misconception<br/>feedback · confidence]
-    G --> C[Python reconcile<br/>clamp marks · verify quotes<br/>compute totals · flag review]
-    C --> T[Teacher review<br/>overrides]
-    T -->|Ultra| I[Class insights<br/>misconceptions · reteach plan]
-    T -->|Ultra| L[Translated<br/>feedback slips]
+![Redpen architecture: the teacher's browser, a stateless FastAPI server, and three NVIDIA Nemotron models on Nebius Token Factory](static/architecture.svg)
+
+Three parts, each with one job:
+
+- **The teacher's browser** holds the whole session: rubric, transcriptions, grades and the cost ledger. When the teacher changes a mark, totals are recomputed right there.
+- **The Redpen server** (FastAPI) is stateless. It fixes photo rotation and size in memory, sends each step to the right model, and then **checks the model's work in Python**. Marks are clamped to the rubric, any evidence quote that isn't in the student's transcription is dropped, totals are computed, and unsure answers are flagged. The API key never leaves the server.
+- **Nebius Token Factory** serves three NVIDIA Nemotron models: Lightning (rubric), Super VL (reading handwriting) and Ultra (grading, class insights, translation).
+
+A PNG version for slides is at [`docs/architecture.png`](docs/architecture.png).
+
+### Reading handwriting: OCR that understands the page
+
+Redpen's OCR is **NVIDIA Nemotron 3.5 Super VL**, the vision model Nebius Token Factory offers for document understanding. There is no separate OCR engine. Plain OCR gives you lines of text. Super VL returns, in **one call for all of a student's pages**, structured JSON per question:
+
+| Plain OCR | Super VL in Redpen |
+|---|---|
+| Lines of text in reading order | Each answer matched to the question number the student wrote |
+| Plain text out | Structured JSON, word-for-word, spelling mistakes kept — the grade depends on them |
+| Crossed-out words read as text | Crossed-out words left out |
+| Unreadable words guessed, at most with a confidence score | Unreadable words become `[?]`, best guesses listed in `unclear_words` |
+| No signal for the teacher | A `legibility` rating per answer — unclear answers are flagged for review |
+| Drawings ignored | Diagrams and working described |
+
+```json
+{ "question_id": "Q1", "attempted": true,
+  "transcription": "Plants make food using sunlight. They take in oxygen and water and give out carbon dioxide.",
+  "diagram": null, "legibility": "clear", "unclear_words": [] }
 ```
+
+Measured: **99.2%** word accuracy on neat sheets, **90.9%** on messy ones, at about **$0.001 and ~5 s per sheet**. The prompt is `READ_PROMPT` in [`redpen/pipeline.py`](redpen/pipeline.py).
+
+### Marking like a teacher: step marking, sentiment, teacher intervention
+
+Click **Try a maths test** to see all three. The sample is 5 students and 3 questions (profit and loss, a linear equation, area of a circle); it is in [`samples/maths/`](samples/maths/).
+
+- **Step marking.** For an answer with working, Ultra lists each line and marks it ✓ or ✗. A slip loses only the marks for that step and the values that depend on it. Later steps that correctly use the wrong value still earn their method mark (error carried forward). Arjun wrote 15% of 2400 = 340, then 2400 + 340 = 2740: he gets **2/4, not 0**. A different valid method (Riya: 115% of 2400 = 2760) earns full marks. A teacher's own step-marking notes in the answer key are followed.
+- **Sentiment = the direction of the student's thinking.** Every answer gets *right direction / partly right / wrong direction*, judged apart from the final answer, plus whether the final answer is correct. **When the thinking was in the right direction but the answer came out wrong, Python asks the teacher to intervene 🧭**: a quick word fixes a slip faster than a red cross. In the maths sample, Arjun (15% of 2400 = 340) and Riya (22 × 7 = 144) are sent for intervention; Arjun's circumference-for-area answer is the wrong direction, so it isn't. Class insights list every "right thinking, wrong answer" student.
+- **Teacher needed.** If an answer is too unreadable to mark (illegible, mostly `[?]`, or Ultra says it can't tell what the student did), Python hands it to the teacher ✋ rather than letting a guess stand. The class report leaves it out of the evidence until the teacher has marked it.
+
+| Step marking | Unreadable → teacher |
+|---|---|
+| ![Step marking](docs/screenshots/maths_1_step_marking.png) | ![Teacher needed](docs/screenshots/maths_2_teacher_needed.png) |
+
+On the maths sample (3 runs), Redpen marked 14 of the 15 answers itself and handed Kunal's unreadable one to the teacher every time. It matched the hand-set reference marks on 12–13 of those 14 answers, and every difference was 1 mark or less. Most differences were "3x = 18, x = 6" with the division step not written, and Redpen flagged those for the teacher. Once, Sana's sign-error answer got 0 instead of 1, where error carried forward is a judgement call; that one was not flagged. This is a 5-student smoke test, not a benchmark. Adding these checks did not change science grading: a fresh neat-set run had 100% of answers within ½ mark.
 
 ### Which model does what, and why
 
@@ -82,11 +115,23 @@ flowchart LR
 
 Reasoning is switched per call with `chat_template_kwargs: {"enable_thinking": ...}`; all calls use JSON mode.
 
+### Where Nebius Token Factory accelerated our workflow
+
+- **No GPUs, no model hosting.** Three NVIDIA Nemotron models (a vision model, a fast model and a 550B reasoning model) are served by Token Factory, so we spent our time on prompts, checks and the teacher's experience instead of infrastructure.
+- **One API for every model.** Token Factory is OpenAI-compatible: the standard `openai` Python client with a different `base_url` ([`redpen/config.py`](redpen/config.py)). Trying a different model for a step is a one-line change. That is how we moved translation from Lightning to Ultra in minutes when Lightning's Tamil and Bengali came out garbled.
+- **The right model for each job.** Having Super VL, Lightning and Ultra behind one key let us route each step to the cheapest model that does it well: the expensive reasoning model is used only where judgement matters.
+- **Reasoning on or off per call.** `chat_template_kwargs.enable_thinking` let us use Ultra with thinking for grading and without thinking for fast translation, on the same model.
+- **Setup check in seconds.** [`check_setup.py`](check_setup.py) lists the available models with `GET /v1/models` and confirms the exact Nemotron model IDs before the app runs.
+- **Parallel grading.** Three sheets are read and graded at once in the app and four at once in the evaluation, with no rate-limit tuning needed for a class-sized batch.
+- **Transparent cost.** Per-token pricing made it easy to show the cost of every call in the app's Model ledger (about 1–2 cents per sheet) and to run our whole evaluation for well under a dollar.
+
+Nebius services used: **Nebius Token Factory** (inference for all three NVIDIA Nemotron models). The app is a single container ([`Dockerfile`](Dockerfile)), ready for Nebius Serverless Endpoints or any container host.
+
 ### Design decisions that make it trustworthy
 
 - **Models judge, code counts.** Totals, clamping to the rubric, half-mark rounding and every class statistic are computed in Python ([`redpen/pipeline.py`](redpen/pipeline.py)). A model can never mis-add a student's marks.
 - **Evidence is verified.** If Ultra quotes “evidence” that isn't in the transcription, Redpen drops the quote rather than show invented student text.
-- **Uncertainty is surfaced.** Answers with unclear handwriting or grader confidence < 0.7 are flagged for the teacher; unreadable words are highlighted in the transcription.
+- **Uncertainty is surfaced.** Answers with unclear handwriting or grader confidence < 0.7 are flagged for the teacher; unreadable words are highlighted in the transcription. Answers that can't be read at all are handed to the teacher to mark — Python decides this, not the model.
 - **The teacher has the last word.** Any mark can be changed in half-mark steps; changed marks are labelled and feed into the class insights.
 - **Robust I/O.** Phone photos are rotation-corrected and downscaled; malformed model JSON is retried; failed sheets can be retried individually.
 
@@ -104,6 +149,8 @@ uvicorn app:app --reload      # open http://localhost:8000
 ```
 
 Click **Try it with a sample class**, then **Grade all**.
+
+Run the offline tests (no API key needed; they cover marking, step marking, sentiment and teacher intervention, teacher hand-off and image handling): `python -m unittest discover tests`
 
 Run the evaluation: `python eval/evaluate.py --runs 3` and `python eval/evaluate.py --set messy --runs 2` (≈ $0.25 and $0.17 in Token Factory credits).
 
@@ -129,7 +176,8 @@ redpen/llm.py          Token Factory client wrapper, JSON parsing/retry, per-cal
 redpen/images.py       photo rotation fix + downscaling
 static/                single-page frontend (HTML + Tailwind + vanilla JS, no build step)
 samples/               sample answer key, 8 neat + 8 messy answer sheets, reference marks
-scripts/make_samples.py  regenerates the sample sheets
+samples/maths/         maths test: step marking, right-thinking-wrong-answer, an unreadable answer
+scripts/make_samples.py  regenerates the sample sheets (make_maths_samples.py for the maths set)
 eval/evaluate.py       accuracy / cost / latency evaluation → eval/RESULTS.md
 check_setup.py         verifies API key and model availability
 ```

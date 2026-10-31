@@ -2,12 +2,13 @@
 
     answer key text --(Lightning)--> structured rubric
     sheet photos    --(Super VL)---> faithful transcription per question
-    transcription   --(Ultra)------> per-criterion marks, evidence, feedback, confidence
+    transcription   --(Ultra)------> per-criterion (step) marks, evidence, sentiment (direction of thinking), feedback
     all students    --(Ultra)------> class misconceptions + reteach plan
-    feedback slip   --(Lightning)--> translated for parents
+    feedback slip   --(Ultra)------> translated for parents
 
-Models only make judgements. Arithmetic (totals, clamping, class statistics) is done
-here in Python, so a model can never mis-add a student's marks.
+Models only make judgements. Arithmetic (totals, clamping, class statistics) and the decision
+of which answers need a teacher are done here in Python, so a model can never mis-add a
+student's marks or quietly mark an answer it could not read.
 """
 
 import json
@@ -31,6 +32,7 @@ Return JSON:
       "question": "question text",
       "max_marks": 3,
       "model_answer": "the ideal answer",
+      "marking_notes": "the teacher's notes on step marking / alternative methods, copied as written, or empty",
       "criteria": [
         {"id": "Q1.a", "description": "one specific, checkable point a student must make", "marks": 1}
       ]
@@ -44,7 +46,9 @@ Rules:
   specific, checkable points whose marks add up to max_marks.
 - Criteria must be observable in a written answer (e.g. "states that oxygen is released"),
   never vague ("good understanding").
-- For numerical questions, separate method/working from the final answer and unit.
+- For numerical and multi-step questions, give one criterion per step of working (formula, substitution,
+  each intermediate result, final answer with unit), so a student who goes wrong halfway still earns
+  marks for the steps they got right.
 """
 
 
@@ -179,6 +183,12 @@ Return JSON:
           "reason": "one short sentence explaining the mark"
         }}
       ],
+      "sentiment": "right_direction | partly_right | wrong_direction | unreadable | not_attempted",
+      "sentiment_note": "one sentence: was the student's thinking heading the right way, whatever the final answer?",
+      "answer_correct": true,
+      "steps": [
+        {{"work": "one step of the student's working, quoted", "ok": true, "note": "short note, e.g. 'arithmetic slip: 15% of 2400 is 360'"}}
+      ],
       "misconception": "short label for a conceptual error the answer reveals, or null",
       "feedback": "1-2 sentences to the student: what was right, what to fix",
       "confidence": 0.9
@@ -197,11 +207,34 @@ Marking rules:
 - Lower confidence (< 0.7) when handwriting was unclear, the answer is ambiguous, or the rubric
   does not clearly cover what the student wrote.
 - Unattempted questions get 0 on every criterion and confidence 1.
+
+Step marking (any answer with working — calculations, equations, multi-step reasoning):
+- List the student's working in "steps", in order, and mark each step ok or not. For prose answers, steps is [].
+- Mark each criterion on its own. A slip in one step loses only the marks for that step and the values
+  that depend on it. Every correct step before the slip keeps its marks.
+- Error carried forward: a later step that correctly applies the right method to an earlier wrong value
+  still earns its method mark (e.g. 2400 + 340 = 2740 earns "selling price = cost price + profit").
+- Accept any valid alternative method. When it reaches the correct result, the steps it replaces count as
+  done: e.g. "115% of 2400 = 2760" earns the profit and "cost price + profit" marks too. Follow marking_notes.
+- A correct final answer with no working: award the answer mark, award method marks only if the working
+  is obviously implied, and set confidence below 0.7 so the teacher decides.
+
+Sentiment = the direction of the student's thinking, judged separately from the final answer:
+- "right_direction": the reasoning or method is sound and heading to the right answer, even if a slip
+  (arithmetic, a sign, a unit, a copying error) made the answer come out wrong.
+- "partly_right": the right idea with a real conceptual gap.
+- "wrong_direction": a wrong method or a wrong idea.
+- "unreadable": the transcription is too fragmentary ([?]) to tell what the student did — then do not guess
+  marks: award only what you can actually see, and set confidence below 0.5.
+- "not_attempted": nothing was written.
+answer_correct: is the student's final answer or conclusion correct? false if it is wrong; true if it is
+right (even if working is missing or the answer is incomplete); null for unreadable or not attempted.
 """
 
 
 def grade_sheet(rubric: dict, reading: dict, ledger: Ledger) -> dict:
-    rubric_for_prompt = {"questions": [{k: q[k] for k in ("id", "question", "max_marks", "model_answer", "criteria")} for q in rubric["questions"]]}
+    keys = ("id", "question", "max_marks", "model_answer", "marking_notes", "criteria")
+    rubric_for_prompt = {"questions": [{k: q[k] for k in keys if q.get(k)} for q in rubric["questions"]]}
     raw = chat_json(
         "Grade answers",
         config.MODEL_REASONING,
@@ -226,6 +259,23 @@ def _squash(text: str) -> str:
     return re.sub(r"[^a-z0-9]", "", text.lower())
 
 
+# Sentiment here is the direction of the student's thinking, not their mood.
+SENTIMENTS = ("right_direction", "partly_right", "wrong_direction", "unreadable", "not_attempted")
+
+
+def _found_in(quote: str, transcription: str) -> bool:
+    return bool(quote) and _squash(quote)[:30] in _squash(transcription)
+
+
+def _unreadable(r: dict, sentiment: str) -> bool:
+    """Too little of the answer could be read to mark it fairly: a teacher has to mark it from the photo."""
+    if not r.get("attempted"):
+        return False
+    words = (r.get("transcription") or "").split()
+    unknown = sum("[?]" in w for w in words)
+    return r.get("legibility") == "illegible" or sentiment == "unreadable" or (bool(words) and unknown / len(words) >= 0.35)
+
+
 def reconcile_grades(rubric: dict, reading: dict, raw: dict) -> dict:
     """Clamp marks to the rubric, compute totals in code, and flag answers a teacher should check."""
     graded_by_q = {str(g.get("question_id")): g for g in raw.get("questions") or []}
@@ -245,7 +295,7 @@ def reconcile_grades(rubric: dict, reading: dict, raw: dict) -> dict:
             awarded = max(0.0, min(c["marks"], round(awarded * 2) / 2))
             evidence = (gc.get("evidence") or "").strip()
             # Drop "evidence" the model did not actually find in the student's text.
-            if evidence and _squash(evidence)[:30] not in _squash(r.get("transcription") or ""):
+            if not _found_in(evidence, r.get("transcription") or ""):
                 evidence = ""
             criteria.append(
                 {
@@ -265,10 +315,34 @@ def reconcile_grades(rubric: dict, reading: dict, raw: dict) -> dict:
         except (TypeError, ValueError):
             confidence = 0.5
         confidence = max(0.0, min(1.0, confidence))
+        score = sum(c["awarded"] for c in criteria)
+
+        sentiment = g.get("sentiment") if g.get("sentiment") in SENTIMENTS else "partly_right"
+        if not r.get("attempted"):
+            sentiment = "not_attempted"
+        answer_correct = g.get("answer_correct") if isinstance(g.get("answer_correct"), bool) else None
+        steps = [
+            {"work": str(s.get("work") or ""), "ok": bool(s.get("ok")), "note": str(s.get("note") or "")}
+            for s in g.get("steps") or []
+            if isinstance(s, dict) and s.get("work")
+        ]
+
+        # Who needs to look at this answer, decided in code from the model's judgements.
+        needs_teacher = _unreadable(r, sentiment)
+        if needs_teacher:
+            sentiment, answer_correct = "unreadable", None
+        right_thinking = sentiment == "right_direction" and score < q["max_marks"]
+        needs_intervention = right_thinking and answer_correct is False
         review_reasons = []
-        if r.get("legibility") in ("partly_unclear", "illegible"):
+        if needs_teacher:
+            review_reasons.append("Couldn't read this answer — please mark it yourself from the photo")
+        elif r.get("legibility") == "partly_unclear":
             review_reasons.append("Hard-to-read handwriting — compare the transcription with the photo")
-        if confidence < 0.7:
+        if needs_intervention:
+            review_reasons.append("Right thinking, wrong answer — teacher intervention needed")
+        elif right_thinking and steps:
+            review_reasons.append("Right thinking, marks lost on a step — please confirm the step marks")
+        if confidence < 0.7 and not needs_teacher:
             review_reasons.append("Grader unsure")
         if not g:
             review_reasons.append("Not graded by model")
@@ -276,11 +350,17 @@ def reconcile_grades(rubric: dict, reading: dict, raw: dict) -> dict:
             {
                 "question_id": q["id"],
                 "max": q["max_marks"],
-                "score": sum(c["awarded"] for c in criteria),
+                "score": score,
                 "criteria": criteria,
+                "sentiment": sentiment,
+                "sentiment_note": g.get("sentiment_note") or "",
+                "answer_correct": answer_correct,
+                "steps": steps,
                 "misconception": g.get("misconception") or None,
                 "feedback": g.get("feedback") or "",
                 "confidence": round(confidence, 2),
+                "needs_teacher": needs_teacher,
+                "needs_intervention": needs_intervention,
                 "needs_review": bool(review_reasons),
                 "review_reasons": review_reasons,
             }
@@ -295,6 +375,8 @@ def reconcile_grades(rubric: dict, reading: dict, raw: dict) -> dict:
         "overall_feedback": raw.get("overall_feedback") or "",
         "next_step": raw.get("next_step") or "",
         "needs_review": sum(1 for q in questions if q["needs_review"]),
+        "needs_teacher": sum(1 for q in questions if q["needs_teacher"]),
+        "needs_intervention": sum(1 for q in questions if q["needs_intervention"]),
     }
 
 
@@ -329,6 +411,9 @@ Return JSON:
 }}
 
 Rules: group students who share the same underlying wrong idea, even if worded differently.
+"Right thinking, wrong answer" is a slip, not a misconception: put those students in students_to_support,
+saying their thinking was right and what one thing to clarify. An unreadable answer is not evidence of
+anything — do not say the student missed its points.
 Only use names and facts present above; when you quote a number, copy it from the statistics
 (e.g. "5 of {count} students"), never compute your own. Order misconceptions by number of students, most first.
 Give at most 3 reteach activities.
@@ -351,7 +436,15 @@ def class_stats(rubric: dict, students: list[dict]) -> dict:
             }
         )
     percents = [s["grading"]["percent"] for s in students]
+    answers = [(s["name"], q) for s in students for q in s["grading"]["questions"]]
     return {
+        "sentiment": {m: sum(1 for _, q in answers if q.get("sentiment") == m) for m in SENTIMENTS},
+        "needs_teacher": sum(1 for _, q in answers if q.get("needs_teacher")),
+        "intervention": [
+            {"name": n, "question_id": q["question_id"], "note": q.get("sentiment_note", "")}
+            for n, q in answers
+            if q.get("needs_intervention")
+        ],
         "students": len(students),
         "average_percent": round(statistics.mean(percents), 1) if percents else 0,
         "median_percent": round(statistics.median(percents), 1) if percents else 0,
@@ -368,10 +461,14 @@ def class_report(rubric: dict, students: list[dict], ledger: Ledger) -> dict:
     for s in students:
         for q in s["grading"]["questions"]:
             missed = [c["description"] for c in q["criteria"] if c["awarded"] < c["max"]]
-            if missed or q["misconception"]:
-                evidence.append(
-                    {"student": s["name"], "question_id": q["question_id"], "missed_points": missed, "misconception": q["misconception"]}
-                )
+            if q.get("needs_teacher"):
+                # Unreadable: the marks are not known yet, so this answer says nothing about understanding.
+                evidence.append({"student": s["name"], "question_id": q["question_id"], "note": "unreadable, the teacher is marking it"})
+            elif missed or q["misconception"]:
+                item = {"student": s["name"], "question_id": q["question_id"], "missed_points": missed, "misconception": q["misconception"]}
+                if q.get("needs_intervention"):
+                    item["note"] = "right thinking, wrong answer: " + (q.get("sentiment_note") or "a slip")
+                evidence.append(item)
     report = chat_json(
         "Class insights",
         config.MODEL_REASONING,

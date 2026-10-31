@@ -79,6 +79,7 @@
               <svg class="btn-arrow" viewBox="0 0 20 20" aria-hidden="true"><path d="M4 10h11M11 5.5L15.5 10 11 14.5" /></svg>
             </button>
             <button id="tryMessy" class="btn-ghost btn-lg magnetic">Try messy handwriting</button>
+            <button id="tryMaths" class="btn-ghost btn-lg magnetic">Try a maths test</button>
           </div>
           <p class="mt-4 text-sm text-ink-soft rise" style="--d: 900ms">Or <a href="#step1" class="link">use your own answer sheets</a> — no sign-up.</p>
         </div>
@@ -112,7 +113,7 @@
           </div>
           <div class="note note-b" aria-hidden="true">
             <span class="badge badge-vision">Super VL</span>
-            <p>Read word-for-word, mistakes included.</p>
+            <p>Handwriting OCR — word-for-word, mistakes included.</p>
           </div>
         </div>
       </div>
@@ -135,11 +136,101 @@
       </div>
       <ol class="pipeline">
         <li class="pipe-step" style="--i: 0"><span class="pipe-num">1</span><span class="badge badge-fast">Lightning</span><p>Turns your answer key into a precise, point-by-point rubric</p></li>
-        <li class="pipe-step" style="--i: 1"><span class="pipe-num">2</span><span class="badge badge-vision">Super VL</span><p>Reads each handwritten sheet word-for-word — mistakes included</p></li>
-        <li class="pipe-step" style="--i: 2"><span class="pipe-num">3</span><span class="badge badge-reason">Ultra</span><p>Reasons through every rubric point and quotes the evidence</p></li>
+        <li class="pipe-step" style="--i: 1"><span class="pipe-num">2</span><span class="badge badge-vision">Super VL</span><p>Handwriting OCR: reads each sheet word-for-word — mistakes included</p></li>
+        <li class="pipe-step" style="--i: 2"><span class="pipe-num">3</span><span class="badge badge-reason">Ultra</span><p>Marks every rubric point and step of working, quotes the evidence, and judges the direction of the student's thinking</p></li>
         <li class="pipe-step" style="--i: 3"><span class="pipe-num">4</span><span class="badge badge-reason">Ultra</span><p>Finds shared misconceptions and plans tomorrow's reteach</p></li>
         <li class="pipe-step" style="--i: 4"><span class="pipe-num">5</span><span class="badge badge-reason">Ultra</span><p>Translates feedback slips for parents</p></li>
       </ol>
+    </section>
+
+    <!-- OCR -->
+    <section id="ocr" class="mt-20" data-reveal>
+      <div class="section-head">
+        <p class="kicker">Reading the handwriting</p>
+        <h2 class="section-title">OCR that understands the page</h2>
+        <p class="section-sub">Redpen's OCR is <b class="text-ink">NVIDIA Nemotron 3.5 Super VL</b>, the vision model Nebius Token Factory serves for document understanding. It doesn't just turn pixels into text — it reads an answer sheet the way a teacher does.</p>
+      </div>
+      <div class="grid gap-5 lg:grid-cols-[0.8fr_1.2fr]">
+        <div class="ocr-card ocr-plain">
+          <p class="tile-label">Plain OCR gives you</p>
+          <ul class="ocr-list">
+            <li><span class="ocr-x">✗</span>Lines of text in reading order, with no idea which answer belongs to which question</li>
+            <li><span class="ocr-x">✗</span>Crossed-out words read as if they were part of the answer</li>
+            <li><span class="ocr-x">✗</span>Drawings and working ignored</li>
+            <li><span class="ocr-x">✗</span>Nothing that tells a teacher “check this one”</li>
+          </ul>
+        </div>
+        <div class="ocr-card ocr-vl">
+          <div class="flex flex-wrap items-center gap-2"><p class="tile-label">Super VL gives Redpen</p><span class="badge badge-vision">Super VL</span></div>
+          <div class="mt-4 grid gap-5 md:grid-cols-2">
+            <ul class="ocr-list">
+              <li><span class="ocr-ok">✓</span>Every page in one call, each answer matched to the question number the student wrote</li>
+              <li><span class="ocr-ok">✓</span>Word-for-word, spelling mistakes kept — the grade depends on them</li>
+              <li><span class="ocr-ok">✓</span><span>Crossed-out words left out; unreadable words become <span class="unclear">[?]</span></span></li>
+              <li><span class="ocr-ok">✓</span>A legibility rating per answer, so hard-to-read ones are flagged</li>
+              <li><span class="ocr-ok">✓</span>Diagrams and working described</li>
+            </ul>
+            <pre class="ocr-json" aria-label="Example of Redpen's reading output"><span class="j-k">"question_id"</span>: <span class="j-s">"Q1"</span>,
+<span class="j-k">"attempted"</span>: <span class="j-b">true</span>,
+<span class="j-k">"transcription"</span>: <span class="j-s">"Plants make food
+  using sunlight. They take in
+  oxygen and water and give
+  out carbon dioxide."</span>,
+<span class="j-k">"diagram"</span>: <span class="j-b">null</span>,
+<span class="j-k">"legibility"</span>: <span class="j-s">"clear"</span>,
+<span class="j-k">"unclear_words"</span>: []</pre>
+          </div>
+          <p class="mt-4 text-xs text-ink-soft">Meera's real Q1, read from her sheet. Measured: 99.2% word accuracy on neat sheets, 90.9% on messy ones · ≈ $0.001 and ~5 s per sheet.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Step marking, sentiment (direction of thinking), teacher hand-off -->
+    <section id="judgement" class="mt-20" data-reveal>
+      <div class="section-head">
+        <p class="kicker">Marking like a teacher</p>
+        <h2 class="section-title">Marks the working, not just the answer</h2>
+        <p class="section-sub">Nemotron 3 Ultra checks a student's working line by line and judges whether their thinking was heading the right way. Python then decides which answers go back to you. From the maths sample class:</p>
+      </div>
+      <div class="stagger grid gap-5 md:grid-cols-3">
+        <div class="ocr-card" style="--i: 0">
+          <div class="flex flex-wrap items-center gap-2"><p class="tile-label">Step marking</p><span class="chip chip-ok">Marks kept</span></div>
+          <ol class="steps mt-4">
+            <li class="step step-ok"><span class="step-n">1</span><code class="step-work">Profit = 15/100 x 2400</code><span class="step-mark">✓</span></li>
+            <li class="step step-bad"><span class="step-n">2</span><code class="step-work">= 340 <span class="text-ink-soft">(should be 360)</span></code><span class="step-mark">✗</span></li>
+            <li class="step step-ok"><span class="step-n">3</span><code class="step-work">SP = CP + profit = 2400 + 340</code><span class="step-mark">✓</span></li>
+            <li class="step step-bad"><span class="step-n">4</span><code class="step-work">= Rs 2740</code><span class="step-mark">✗</span></li>
+          </ol>
+          <p class="mt-3 text-sm leading-relaxed">Arjun's method was right, but he slipped on 15% of 2400. He keeps the method marks, including step 3, which correctly uses his wrong value (error carried forward): <b>2/4, not 0</b>. A different valid method, such as 115% of 2400, earns full marks.</p>
+        </div>
+        <div class="ocr-card" style="--i: 1">
+          <div class="flex flex-wrap items-center gap-2"><p class="tile-label">Teacher needed</p><span class="chip chip-err">✋ For you</span></div>
+          <p class="transcript mt-4"><span class="unclear" title="Unreadable">[?]</span></p>
+          <p class="mt-3 text-sm leading-relaxed">If an answer can't be read, Redpen doesn't guess. Kunal's Q1 is a smudged scrawl, so it goes to you to mark from the photo, one click per point.</p>
+        </div>
+        <div class="ocr-card" style="--i: 2">
+          <div class="flex flex-wrap items-center gap-2"><p class="tile-label">Sentiment</p><span class="chip chip-ok">Right direction</span><span class="chip chip-err">Answer ✗</span></div>
+          <div class="flag flag-teacher mt-4"><span><b>🧭 Teacher intervention.</b> Right thinking, wrong answer.</span></div>
+          <p class="mt-3 text-sm leading-relaxed">Sentiment is the direction of a student's thinking: right, partly right or wrong, judged apart from the final answer. When the thinking was right but the answer came out wrong, Redpen asks you to step in, because a quick word fixes a slip faster than a red cross.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Architecture -->
+    <section id="architecture" class="mt-20" data-reveal>
+      <div class="section-head">
+        <p class="kicker">Under the hood</p>
+        <h2 class="section-title">Architecture</h2>
+        <p class="section-sub">Your browser keeps the session; the server is stateless and checks every model output in code; three Nemotron models on Nebius Token Factory do the reading and judging.</p>
+      </div>
+      <div class="card arch-card">
+        <div class="overflow-x-auto">
+          <a href="/static/architecture.svg" target="_blank" rel="noopener" aria-label="Open the architecture diagram full size">
+            <img src="/static/architecture.svg" alt="Redpen architecture: the teacher's browser sends answer keys and photos to a stateless FastAPI server, which calls NVIDIA Nemotron Lightning, Super VL and Ultra on Nebius Token Factory; Python reconciles marks and computes every total." class="arch-img" width="1200" height="820" loading="lazy" />
+          </a>
+        </div>
+        <p class="mt-2 px-1 text-xs text-ink-soft sm:hidden">Swipe sideways to see the whole diagram, or tap it to open full size.</p>
+      </div>
     </section>
 
     <!-- Step 1 -->

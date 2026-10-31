@@ -64,14 +64,15 @@ def sample(set: str = "neat"):
     """Sample class so anyone (including judges) can try Redpen without their own sheets.
 
     set=neat: tidy handwriting. set=messy: sloppy handwriting photographed badly.
+    set=maths: a maths test for step marking, unreadable answers and student sentiment.
     """
-    folder = "sheets_messy" if set == "messy" else "sheets"
-    data = json.loads((SAMPLES / "class.json").read_text())
+    root, folder = {"messy": ("", "sheets_messy"), "maths": ("maths", "maths/sheets")}.get(set, ("", "sheets"))
+    data = json.loads((SAMPLES / root / "class.json").read_text())
     students = [
         {"name": s["name"], "pages": [f"/samples/{folder}/{s['name'].lower().replace(' ', '_')}.jpg"]}
         for s in data["students"]
     ]
-    return {"answer_key": (SAMPLES / "answer_key.txt").read_text(), "students": students}
+    return {"answer_key": (SAMPLES / root / "answer_key.txt").read_text(), "students": students}
 
 
 class RubricIn(BaseModel):

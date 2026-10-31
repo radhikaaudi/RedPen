@@ -1,0 +1,201 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 820" width="1200" height="820" role="img" aria-labelledby="t d">
+  <title id="t">Redpen architecture</title>
+  <desc id="d">The teacher's browser talks to a stateless FastAPI server, which calls three NVIDIA Nemotron models on Nebius Token Factory. Python code, not the models, computes every mark total and statistic.</desc>
+  <defs>
+    <filter id="lift" x="-10%" y="-10%" width="120%" height="130%">
+      <feDropShadow dx="0" dy="2" stdDeviation="3" flood-color="#3c2a16" flood-opacity="0.12" />
+    </filter>
+    <filter id="liftSm" x="-10%" y="-10%" width="120%" height="130%">
+      <feDropShadow dx="0" dy="1" stdDeviation="1.5" flood-color="#3c2a16" flood-opacity="0.12" />
+    </filter>
+    <marker id="arr" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0 0L10 5L0 10z" fill="#7a2232" />
+    </marker>
+    <marker id="arrSage" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M0 0L10 5L0 10z" fill="#98a594" />
+    </marker>
+    <style>
+      text { font-family: Inter, -apple-system, "Segoe UI", Helvetica, Arial, sans-serif; fill: #2f2a25; }
+      .h { font-family: Fraunces, Georgia, "Times New Roman", serif; font-weight: 600; }
+      .kick { font-size: 11.5px; font-weight: 700; letter-spacing: 1.4px; fill: #657362; }
+      .ttl { font-size: 17px; }
+      .sub { font-size: 12px; fill: #6f675c; }
+      .bt { font-size: 13px; font-weight: 600; }
+      .bs { font-size: 12px; fill: #6f675c; }
+      .mono { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+      .lbl { font-size: 11px; font-weight: 600; fill: #7a2232; letter-spacing: 0.3px; }
+      .tag { font-size: 11px; font-weight: 700; }
+    </style>
+  </defs>
+
+  <rect width="1200" height="820" fill="#f4ede1" />
+
+  <!-- Title -->
+  <text x="30" y="46" class="h" font-size="26">Redpen architecture</text>
+  <text x="30" y="72" class="sub" font-size="13.5">Models judge, code counts. The server is stateless; all session state lives in the teacher's browser.</text>
+
+  <!-- ============ Column 1: browser ============ -->
+  <rect x="30" y="96" width="260" height="448" rx="18" fill="#fdfaf4" stroke="#e1d4be" filter="url(#lift)" />
+  <text x="50" y="126" class="kick">TEACHER'S BROWSER</text>
+  <text x="50" y="150" class="h ttl">Single-page app</text>
+  <text x="50" y="170" class="sub">HTML · Tailwind · vanilla JS</text>
+
+  <g filter="url(#liftSm)">
+    <rect x="48" y="188" width="224" height="72" rx="12" fill="#ffffff" stroke="#e1d4be" />
+    <rect x="48" y="272" width="224" height="80" rx="12" fill="#ffffff" stroke="#e1d4be" />
+    <rect x="48" y="364" width="224" height="80" rx="12" fill="#ffffff" stroke="#e1d4be" />
+    <rect x="48" y="456" width="224" height="72" rx="12" fill="#ffffff" stroke="#e1d4be" />
+  </g>
+  <text x="62" y="211" class="bt">Inputs</text>
+  <text x="62" y="230" class="bs">Answer key (plain text)</text>
+  <text x="62" y="247" class="bs">Sheet photos — phone is fine</text>
+
+  <text x="62" y="295" class="bt">Session state</text>
+  <text x="62" y="314" class="bs">Rubric, readings, grades, cost</text>
+  <text x="62" y="331" class="bs">ledger — kept in the browser only</text>
+
+  <text x="62" y="387" class="bt">Teacher review</text>
+  <text x="62" y="406" class="bs">Checks flagged answers, adjusts</text>
+  <text x="62" y="423" class="bs">any mark ±½; totals recomputed</text>
+
+  <text x="62" y="479" class="bt">Outputs</text>
+  <text x="62" y="498" class="bs">Results table · CSV · insights</text>
+  <text x="62" y="515" class="bs">Printable, translated slips</text>
+
+  <!-- browser <-> server -->
+  <line x1="296" y1="320" x2="354" y2="320" stroke="#7a2232" stroke-width="2.5" marker-start="url(#arr)" marker-end="url(#arr)" />
+  <text transform="translate(318 305) rotate(-90)" class="lbl" text-anchor="start">fetch · JSON + photos</text>
+
+  <!-- ============ Column 2: server ============ -->
+  <rect x="360" y="96" width="420" height="448" rx="18" fill="#fdfaf4" stroke="#e1d4be" filter="url(#lift)" />
+  <text x="380" y="126" class="kick">REDPEN SERVER</text>
+  <text x="380" y="150" class="h ttl">FastAPI · <tspan class="mono" font-size="15" font-weight="500">app.py</tspan></text>
+  <text x="380" y="170" class="sub">Stateless · per-IP rate limit · photos never written to disk</text>
+
+  <rect x="378" y="184" width="384" height="26" rx="8" fill="#eee4d3" />
+  <text x="390" y="201" class="mono" font-size="11.5" style="fill:#4f5b4c">POST /api/ rubric · read · grade · report · translate</text>
+
+  <g filter="url(#liftSm)">
+    <rect x="378" y="220" width="384" height="56" rx="12" fill="#ffffff" stroke="#e1d4be" />
+    <rect x="378" y="286" width="384" height="56" rx="12" fill="#ffffff" stroke="#e1d4be" />
+    <rect x="378" y="352" width="384" height="56" rx="12" fill="#ffffff" stroke="#e1d4be" />
+    <rect x="378" y="418" width="384" height="110" rx="12" fill="#f7ebe8" stroke="#7a2232" stroke-opacity="0.55" />
+  </g>
+  <text x="392" y="242" class="bt mono" font-size="12.5">images.py</text>
+  <text x="392" y="262" class="bs">Fix phone rotation · resize to ≤1800 px · JPEG, in memory</text>
+
+  <text x="392" y="308" class="bt mono" font-size="12.5">pipeline.py</text>
+  <text x="392" y="328" class="bs">rubric → read → grade → reconcile → report → translate</text>
+
+  <text x="392" y="374" class="bt mono" font-size="12.5">llm.py</text>
+  <text x="392" y="394" class="bs">JSON mode · reasoning on/off per call · retries · cost per call</text>
+
+  <text x="392" y="441" class="bt" style="fill:#5a1724">Models judge, code counts</text>
+  <text x="392" y="461" class="bs" style="fill:#5a1724"><tspan class="mono" font-size="11.5">reconcile_grades</tspan>: clamp marks to the rubric in ½ steps,</text>
+  <text x="392" y="478" class="bs" style="fill:#5a1724">drop any evidence quote not in the transcription, total,</text>
+  <text x="392" y="495" class="bs" style="fill:#5a1724">flag unclear handwriting or confidence &lt; 0.7</text>
+  <text x="392" y="514" class="bs" style="fill:#5a1724"><tspan class="mono" font-size="11.5">class_stats</tspan>: every number in the class report</text>
+
+  <!-- server <-> Token Factory -->
+  <line x1="786" y1="320" x2="844" y2="320" stroke="#7a2232" stroke-width="2.5" marker-start="url(#arr)" marker-end="url(#arr)" />
+  <text transform="translate(808 305) rotate(-90)" class="lbl" text-anchor="start">HTTPS · key stays on server</text>
+
+  <!-- ============ Column 3: Token Factory ============ -->
+  <rect x="850" y="96" width="320" height="448" rx="18" fill="#fdfaf4" stroke="#e1d4be" filter="url(#lift)" />
+  <text x="870" y="126" class="kick">NEBIUS TOKEN FACTORY</text>
+  <text x="870" y="150" class="h ttl">NVIDIA Nemotron models</text>
+  <text x="870" y="170" class="sub">OpenAI-compatible API · openai client</text>
+
+  <g filter="url(#liftSm)">
+    <rect x="868" y="188" width="284" height="84" rx="12" fill="#ffffff" stroke="#e1d4be" />
+    <rect x="868" y="284" width="284" height="92" rx="12" fill="#ffffff" stroke="#e1d4be" />
+    <rect x="868" y="388" width="284" height="140" rx="12" fill="#ffffff" stroke="#e1d4be" />
+  </g>
+  <!-- Lightning -->
+  <rect x="882" y="200" width="168" height="22" rx="11" fill="#f3e8cd" stroke="#94702d" stroke-opacity="0.35" />
+  <text x="894" y="215" class="tag" style="fill:#7a5a1e">Nemotron 3.5 Lightning</text>
+  <text x="882" y="242" class="bs" style="fill:#2f2a25">Answer key → structured rubric</text>
+  <text x="882" y="260" class="bs">Reasoning off · fast and cheap</text>
+  <!-- Super VL -->
+  <rect x="882" y="296" width="162" height="22" rx="11" fill="#f2e2de" stroke="#7a2232" stroke-opacity="0.3" />
+  <text x="894" y="311" class="tag" style="fill:#5a1724">Nemotron 3.5 Super VL</text>
+  <text x="882" y="335" class="bs" style="fill:#2f2a25">Handwriting OCR + page understanding:</text>
+  <text x="882" y="351" class="bs" style="fill:#2f2a25">answers per question, word-for-word,</text>
+  <text x="882" y="367" class="bs">[?] for unreadable words · reasoning off</text>
+  <!-- Ultra -->
+  <rect x="882" y="400" width="146" height="22" rx="11" fill="#e6eae1" stroke="#4f5b4c" stroke-opacity="0.3" />
+  <text x="894" y="415" class="tag" style="fill:#4f5b4c">Nemotron 3 Ultra</text>
+  <text x="882" y="444" class="bs" style="fill:#2f2a25">Grades each rubric point with an</text>
+  <text x="882" y="461" class="bs" style="fill:#2f2a25">evidence quote — <tspan font-weight="600">reasoning on</tspan></text>
+  <text x="882" y="484" class="bs" style="fill:#2f2a25">Class misconceptions + reteach</text>
+  <text x="882" y="501" class="bs" style="fill:#2f2a25">plan — <tspan font-weight="600">reasoning on</tspan></text>
+  <text x="882" y="519" class="bs" style="fill:#2f2a25">Parent-slip translation — <tspan font-weight="600">reasoning off</tspan></text>
+
+  <!-- ============ Bottom: one sheet, end to end ============ -->
+  <text x="30" y="590" class="kick">ONE SHEET, END TO END</text>
+
+  <g filter="url(#liftSm)">
+    <rect x="30" y="604" width="176" height="150" rx="14" fill="#fdfaf4" stroke="#e1d4be" />
+    <rect x="222" y="604" width="176" height="150" rx="14" fill="#fdfaf4" stroke="#e1d4be" />
+    <rect x="414" y="604" width="176" height="150" rx="14" fill="#fdfaf4" stroke="#e1d4be" />
+    <rect x="606" y="604" width="176" height="150" rx="14" fill="#f7ebe8" stroke="#7a2232" stroke-opacity="0.45" />
+    <rect x="798" y="604" width="176" height="150" rx="14" fill="#fdfaf4" stroke="#e1d4be" />
+    <rect x="990" y="604" width="180" height="150" rx="14" fill="#fdfaf4" stroke="#e1d4be" />
+  </g>
+  <g stroke="#98a594" stroke-width="2" fill="none" marker-end="url(#arrSage)">
+    <line x1="208" y1="679" x2="219" y2="679" /><line x1="400" y1="679" x2="411" y2="679" />
+    <line x1="592" y1="679" x2="603" y2="679" /><line x1="784" y1="679" x2="795" y2="679" />
+    <line x1="976" y1="679" x2="987" y2="679" />
+  </g>
+
+  <g>
+    <circle cx="56" cy="632" r="13" fill="#7a2232" /><text x="56" y="637" text-anchor="middle" font-size="13" font-weight="700" style="fill:#f7f1e6">1</text>
+    <text x="78" y="637" class="bt">Rubric</text>
+    <text x="44" y="666" class="bs">Answer key becomes</text>
+    <text x="44" y="683" class="bs">checkable marking</text>
+    <text x="44" y="700" class="bs">points</text>
+    <rect x="44" y="718" width="76" height="22" rx="11" fill="#f3e8cd" /><text x="82" y="733" text-anchor="middle" class="tag" style="fill:#7a5a1e">Lightning</text>
+  </g>
+  <g>
+    <circle cx="248" cy="632" r="13" fill="#7a2232" /><text x="248" y="637" text-anchor="middle" font-size="13" font-weight="700" style="fill:#f7f1e6">2</text>
+    <text x="270" y="637" class="bt">Read (OCR)</text>
+    <text x="236" y="666" class="bs">All pages, one call:</text>
+    <text x="236" y="683" class="bs">verbatim text per</text>
+    <text x="236" y="700" class="bs">question + legibility</text>
+    <rect x="236" y="718" width="74" height="22" rx="11" fill="#f2e2de" /><text x="273" y="733" text-anchor="middle" class="tag" style="fill:#5a1724">Super VL</text>
+  </g>
+  <g>
+    <circle cx="440" cy="632" r="13" fill="#7a2232" /><text x="440" y="637" text-anchor="middle" font-size="13" font-weight="700" style="fill:#f7f1e6">3</text>
+    <text x="462" y="637" class="bt">Grade</text>
+    <text x="428" y="666" class="bs">Marks, evidence quote,</text>
+    <text x="428" y="683" class="bs">misconception, feedback,</text>
+    <text x="428" y="700" class="bs">confidence</text>
+    <rect x="428" y="718" width="54" height="22" rx="11" fill="#e6eae1" /><text x="455" y="733" text-anchor="middle" class="tag" style="fill:#4f5b4c">Ultra</text>
+  </g>
+  <g>
+    <circle cx="632" cy="632" r="13" fill="#7a2232" /><text x="632" y="637" text-anchor="middle" font-size="13" font-weight="700" style="fill:#f7f1e6">4</text>
+    <text x="654" y="637" class="bt" style="fill:#5a1724">Reconcile</text>
+    <text x="620" y="666" class="bs" style="fill:#5a1724">Clamp marks, verify</text>
+    <text x="620" y="683" class="bs" style="fill:#5a1724">quotes, compute totals,</text>
+    <text x="620" y="700" class="bs" style="fill:#5a1724">flag for review</text>
+    <rect x="620" y="718" width="62" height="22" rx="11" fill="#ffffff" stroke="#7a2232" stroke-opacity="0.35" /><text x="651" y="733" text-anchor="middle" class="tag" style="fill:#5a1724">Python</text>
+  </g>
+  <g>
+    <circle cx="824" cy="632" r="13" fill="#7a2232" /><text x="824" y="637" text-anchor="middle" font-size="13" font-weight="700" style="fill:#f7f1e6">5</text>
+    <text x="846" y="637" class="bt">Review</text>
+    <text x="812" y="666" class="bs">Teacher checks flags</text>
+    <text x="812" y="683" class="bs">and adjusts any mark</text>
+    <text x="812" y="700" class="bs">in ½ steps</text>
+    <rect x="812" y="718" width="70" height="22" rx="11" fill="#eee4d3" /><text x="847" y="733" text-anchor="middle" class="tag" style="fill:#6f675c">Teacher</text>
+  </g>
+  <g>
+    <circle cx="1016" cy="632" r="13" fill="#7a2232" /><text x="1016" y="637" text-anchor="middle" font-size="13" font-weight="700" style="fill:#f7f1e6">6</text>
+    <text x="1038" y="637" class="bt">Insights &amp; slips</text>
+    <text x="1004" y="666" class="bs">Shared misconceptions,</text>
+    <text x="1004" y="683" class="bs">reteach plan, slips</text>
+    <text x="1004" y="700" class="bs">in 6 languages</text>
+    <rect x="1004" y="718" width="54" height="22" rx="11" fill="#e6eae1" /><text x="1031" y="733" text-anchor="middle" class="tag" style="fill:#4f5b4c">Ultra</text>
+  </g>
+
+  <text x="30" y="792" class="sub" font-size="12.5">Measured on the sample class: ≈ $0.01 and ~11 s per sheet (read + grade), three sheets in parallel. Every model call is listed in the in-app Model ledger.</text>
+</svg>
